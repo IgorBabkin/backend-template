@@ -1,7 +1,7 @@
 import { ExpressServerBuilder } from './lib/express/ExpressServerBuilder';
 import { RequestMediator, Scope } from '@ibabkin/ts-request-mediator';
 import { RequestContainer } from './lib/requestMediator/container';
-import { createContainer } from './lib/container/di';
+import { createContainer, disposeContainer } from './lib/container/di';
 import { ProcessEnv } from './env/ProcessEnv';
 import { Production } from './stages/Production';
 import { Development } from './stages/Development';
@@ -9,24 +9,26 @@ import { Common } from './stages/Common';
 import { bodyParsing, handleError, handleNotFound, logRequests } from './lib/express/expressModules';
 import { ExpressErrorHandler } from './errors/ExpressErrorHandler';
 import { payments } from './useCase/payments/payments';
+import { createLogger } from './domains/logger/ILogger';
+import * as console from 'console';
 
 const env = new ProcessEnv(process.env);
 
-const container = createContainer(Scope.Application)
+const container = createContainer([Scope.Application])
   .add(new Common(env))
   .add(env.production ? new Production(env) : new Development(env));
 
 const server = ExpressServerBuilder.fromMediator(new RequestMediator(new RequestContainer(container)))
-  .port(env.port)
   .addBuilderModule(payments)
-  .addExpressModule(logRequests(container.resolve('logger')))
+  .addExpressModule(logRequests(createLogger('main')(container)))
   .addExpressModule(bodyParsing)
-  .addExpressModule(handleNotFound)
   .addExpressModule(handleError(container.resolve(ExpressErrorHandler)))
+  .addExpressModule(handleNotFound)
   .build();
 
 server.on('error', (error: Error) => {
-  container.dispose();
+  disposeContainer(container).catch((e) => console.error('disposeContainer', e));
+
   if (error.name !== 'listen') {
     throw error;
   }

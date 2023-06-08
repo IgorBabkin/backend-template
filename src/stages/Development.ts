@@ -3,9 +3,11 @@ import { IEnv } from '../env/IEnv';
 import { DevErrorContext } from '../errors/context/DevErrorContext';
 import { PrismaTransactionContext } from '../lib/prisma/PrismaTransactionContext';
 import { PrismaClient } from '@prisma/client';
+import { createWinstonLogger, WinstonLogger } from '../domains/logger/WinstonLogger';
+import { format } from 'winston';
 
 export class Development implements IContainerModule {
-  constructor(env: IEnv) {}
+  constructor(private env: IEnv) {}
 
   applyTo(container: IContainer): void {
     container
@@ -14,6 +16,16 @@ export class Development implements IContainerModule {
           withArgs(
             new PrismaClient({
               log: ['info'],
+            }),
+          ),
+        ),
+      )
+      .add(
+        Registration.fromClass(WinstonLogger).pipe(
+          withArgs(
+            createWinstonLogger({
+              level: this.env.logLevel,
+              format: format.combine(format.timestamp(), format.json()),
             }),
           ),
         ),

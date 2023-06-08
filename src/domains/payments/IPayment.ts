@@ -1,2 +1,4 @@
 export interface IPaymentValue {}
-export type IPayment = IPaymentValue;
+export interface IPayment extends IPaymentValue {
+  id: string;
+}

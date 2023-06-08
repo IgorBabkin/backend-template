@@ -1,9 +1,10 @@
 import { z } from 'zod';
 import { IEnv, LogLevel } from './IEnv';
+import { zNumber } from '../lib/zod/utils';
 
 const schema = z.object({
   LOG_LEVEL: z.nativeEnum(LogLevel),
-  PORT: z.string().regex(/^\d+$/).transform(Number),
+  PORT: zNumber,
   NODE_ENV: z.string().optional(),
 });
 

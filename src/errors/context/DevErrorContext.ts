@@ -1,5 +1,5 @@
 import { inject } from '@ibabkin/ts-constructor-injector';
-import { createLogger, ILogger } from '../../domains/ILogger';
+import { createLogger, ILogger } from '../../domains/logger/ILogger';
 import { Response } from 'express';
 import { IHttpErrorContextKey } from '../IHttpErrorContext';
 import { forKey } from '@ibabkin/ts-ioc-container';

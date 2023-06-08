@@ -2,7 +2,7 @@ import { PrismaClient } from '@prisma/client';
 import { Fn } from '@ibabkin/ts-constructor-injector';
 import { forKey, Resolvable } from '@ibabkin/ts-ioc-container';
 import { ITransactionContext, ITransactionContextKey } from '@ibabkin/ts-request-mediator';
-import { perApplication } from '../container/di';
+import { onDispose, perApplication } from '../container/di';
 
 @perApplication
 @forKey(ITransactionContextKey)
@@ -11,8 +11,13 @@ export class PrismaTransactionContext implements ITransactionContext {
 
   execute<Response>(setContext: (context: ITransactionContext) => Promise<Response>): Promise<Response> {
     return this.dbClient.$transaction((transactionClient) =>
-      setContext(new PrismaTransactionContext(transactionClient as PrismaClient)),
+      setContext(new PrismaTransactionContext(transactionClient as any)),
     );
+  }
+
+  @onDispose
+  disconnect(): Promise<void> {
+    return this.dbClient.$disconnect();
   }
 }
 

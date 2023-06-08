@@ -1,7 +1,7 @@
 import { CreatePayment, ICreatePaymentQuery } from './CreatePayment';
 import { JsonQuery } from '../../lib/express/route/JsonQuery';
 import { z } from 'zod';
-import { GET } from '../../lib/express/expressDecorators';
+import { POST } from '../../lib/express/expressDecorators';
 import { Request } from 'express';
 import { IMediator } from '@ibabkin/ts-request-mediator';
 
@@ -11,7 +11,7 @@ const schema = z.object({
   params: z.object({}),
 });
 
-@GET('/waste_stream')
+@POST('/payments')
 export class CreatePaymentHttpRoute extends JsonQuery implements ICreatePaymentQuery {
   constructor(request: Request) {
     super();

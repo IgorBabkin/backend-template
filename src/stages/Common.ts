@@ -1,8 +1,11 @@
-import { IContainer, IContainerModule } from '@ibabkin/ts-ioc-container';
+import { IContainer, IContainerModule, Registration } from '@ibabkin/ts-ioc-container';
 import { IEnv } from '../env/IEnv';
+import { PaymentRepo } from '../domains/payments/PaymentRepo';
 
 export class Common implements IContainerModule {
   constructor(env: IEnv) {}
 
-  applyTo(container: IContainer): void {}
+  applyTo(container: IContainer): void {
+    container.add(Registration.fromClass(PaymentRepo));
+  }
 }

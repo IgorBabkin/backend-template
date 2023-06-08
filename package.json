@@ -6,8 +6,8 @@
     "seed": "ts-node prisma/seed.ts"
   },
   "scripts": {
-    "start": "node -r reflect-metadata -r dotenv/config ./build/http/main.js",
-    "start:dev": "ts-node -r reflect-metadata -r dotenv/config src/http/main.ts",
+    "start": "node -r reflect-metadata -r dotenv/config ./build/web.js",
+    "start:dev": "ts-node -r reflect-metadata -r dotenv/config src/web.ts",
     "watch:start:dev": "nodemon --exec 'npm run start:dev'",
     "start:infra": "docker-compose up",
     "build": "npm run db:migrate && npm run compile",

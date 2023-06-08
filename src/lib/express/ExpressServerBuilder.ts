@@ -1,5 +1,5 @@
 import express, { Express } from 'express';
-import { constructor, resolve } from '@ibabkin/ts-constructor-injector';
+import { constructor } from '@ibabkin/ts-constructor-injector';
 import { getRoute } from './expressDecorators';
 import http, { Server } from 'http';
 import { IMediator } from '@ibabkin/ts-request-mediator';
@@ -18,17 +18,14 @@ export class ExpressServerBuilder implements IServerBuilder {
     const { method, url } = getRoute(Route);
     this.server[method](url, (req, res, next) => {
       try {
-        const query = resolve(req)(Route);
-        return query.handle({ response: res, mediator: this.mediator }).catch((err) => next(err));
+        const query = new Route(req);
+        return query.handle({ response: res, mediator: this.mediator }).catch((err) => {
+          next(err);
+        });
       } catch (e) {
         next(e);
       }
     });
-    return this;
-  }
-
-  port(value: number): this {
-    this.server.set('port', value);
     return this;
   }
 

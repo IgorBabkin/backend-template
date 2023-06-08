@@ -2,16 +2,7 @@ import { IHttpErrorContext } from './IHttpErrorContext';
 import { constructor } from '@ibabkin/ts-constructor-injector';
 import { ErrorHandler, IErrorHandler } from '@ibabkin/ts-request-mediator';
 import HttpError from 'standard-http-error';
-
-abstract class HttpErrorHandler extends ErrorHandler<IHttpErrorContext> {
-  protected abstract statusCode: number;
-  protected abstract errors: constructor<Error>[];
-
-  protected handleError(error: Error, context: IHttpErrorContext): void {
-    context.logError(`StatusCode: ${this.statusCode}`, error);
-    context.sendError(this.statusCode, error);
-  }
-}
+import { EntityNotFoundError } from '../domains/errors/EntityNotFoundError';
 
 export class InternalErrorHandler implements IErrorHandler<IHttpErrorContext> {
   private statusCode = HttpError.INTERNAL_SERVER_ERROR;
@@ -22,27 +13,37 @@ export class InternalErrorHandler implements IErrorHandler<IHttpErrorContext> {
   }
 }
 
-export class BadRequestErrorHandler extends HttpErrorHandler {
+abstract class DefaultErrorHandler extends ErrorHandler<IHttpErrorContext> {
+  protected abstract errors: constructor<Error>[];
+  protected abstract statusCode: number;
+
+  protected handleError(error: Error, context: IHttpErrorContext): void {
+    context.logError(`StatusCode: ${this.statusCode}`, error);
+    context.sendError(this.statusCode, error);
+  }
+}
+
+export class BadRequestErrorHandler extends DefaultErrorHandler {
+  protected errors: constructor<Error>[] = [EntityNotFoundError];
   protected statusCode = HttpError.BAD_REQUEST;
-  protected errors: constructor<Error>[] = [];
 }
 
-export class ForbiddenErrorHandler extends HttpErrorHandler {
+export class ForbiddenErrorHandler extends DefaultErrorHandler {
+  protected errors: constructor<Error>[] = [];
   protected statusCode = HttpError.FORBIDDEN;
-  protected errors: constructor<Error>[] = [];
 }
 
-export class NotFoundErrorHandler extends HttpErrorHandler {
+export class NotFoundErrorHandler extends DefaultErrorHandler {
+  protected errors: constructor<Error>[] = [];
   protected statusCode = HttpError.NOT_FOUND;
-  protected errors: constructor<Error>[] = [];
 }
 
-export class ServiceUnavailableErrorHandler extends HttpErrorHandler {
+export class ServiceUnavailableErrorHandler extends DefaultErrorHandler {
+  protected errors: constructor<Error>[] = [];
   protected statusCode = HttpError.SERVICE_UNAVAILABLE;
-  protected errors: constructor<Error>[] = [];
 }
 
-export class UnAuthorizedRequestErrorHandler extends HttpErrorHandler {
-  protected statusCode = HttpError.UNAUTHORIZED;
+export class UnAuthorizedRequestErrorHandler extends DefaultErrorHandler {
   protected errors: constructor<Error>[] = [];
+  protected statusCode = HttpError.UNAUTHORIZED;
 }
