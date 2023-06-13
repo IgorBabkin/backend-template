@@ -1,7 +1,6 @@
-import { IServerBuilder } from '../../lib/express/IServerBuilder';
-import { CreatePaymentHttpRoute } from './CreatePaymentHttpRoute';
+import { IMediator } from '@ibabkin/ts-request-mediator';
 import { GetPaymentHttpRoute } from './GetPaymentHttpRoute';
 
-export function payments(builder: IServerBuilder) {
-  builder.addRoute(CreatePaymentHttpRoute).addRoute(GetPaymentHttpRoute);
-}
+export const payments = (mediator: IMediator) => ({
+  getPayment: new GetPaymentHttpRoute(mediator),
+});

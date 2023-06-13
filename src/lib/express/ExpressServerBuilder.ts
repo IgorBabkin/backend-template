@@ -1,33 +1,15 @@
-import express, { Express } from 'express';
-import { constructor } from '@ibabkin/ts-constructor-injector';
-import { getRoute } from './expressDecorators';
+import express, { Express, NextFunction, Request, Response } from 'express';
 import http, { Server } from 'http';
-import { IMediator } from '@ibabkin/ts-request-mediator';
-import { IExpressRoute } from './IExpressRoute';
 import { IServerBuilder } from './IServerBuilder';
+import { Validator } from './Validator';
+import { AppMediator } from './AppMediator';
+import * as console from 'console';
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 export class ExpressServerBuilder implements IServerBuilder {
-  static fromMediator(mediator: IMediator): ExpressServerBuilder {
-    return new ExpressServerBuilder(express(), mediator);
-  }
+  private server = express();
 
-  constructor(private server: Express, private mediator: IMediator) {}
-
-  addRoute(Route: constructor<IExpressRoute>): this {
-    const { method, url } = getRoute(Route);
-    this.server[method](url, (req, res, next) => {
-      try {
-        const query = new Route(req);
-        return query.handle({ response: res, mediator: this.mediator }).catch((err) => {
-          next(err);
-        });
-      } catch (e) {
-        next(e);
-      }
-    });
-    return this;
-  }
+  constructor(private mediator: AppMediator, private validator: Validator) {}
 
   addExpressModule(module: (app: Express) => void): this {
     module(this.server);
@@ -41,5 +23,37 @@ export class ExpressServerBuilder implements IServerBuilder {
 
   build(): Server {
     return http.createServer(this.server);
+  }
+
+  addDeleteRoute(url: string, operationId: string): this {
+    this.server.delete(url, (req, res, next) => this.handleRequest(operationId, { req, res, next }));
+    return this;
+  }
+
+  addGetRoute(url: string, operationId: string): this {
+    console.log('addGetRoute', url, operationId);
+    this.server.get(url, (req, res, next) => this.handleRequest(operationId, { req, res, next }));
+    return this;
+  }
+
+  addPostRoute(url: string, operationId: string): this {
+    this.server.post(url, (req, res, next) => this.handleRequest(operationId, { req, res, next }));
+    return this;
+  }
+
+  addPutRoute(url: string, operationId: string): this {
+    this.server.put(url, (req, res, next) => this.handleRequest(operationId, { req, res, next }));
+    return this;
+  }
+
+  private handleRequest(operationId: string, { req, res, next }: { req: Request; res: Response; next: NextFunction }) {
+    try {
+      return this.mediator
+        .send(operationId, this.validator.parse(operationId, req))
+        .then(({ status, payload }) => res.status(status).header('ContentType', 'application/json').send(payload))
+        .catch(next);
+    } catch (e) {
+      next(e);
+    }
   }
 }

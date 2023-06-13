@@ -17,3 +17,4 @@ report_view.json
 .DS_Store
 github
 github.pub
+.generated

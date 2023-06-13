@@ -1,27 +1,15 @@
-import { JsonQuery } from '../../lib/express/route/JsonQuery';
-import { GetPayment, IGetPaymentQuery } from './GetPayment';
 import { IMediator } from '@ibabkin/ts-request-mediator';
-import { z } from 'zod';
-import { Request } from 'express';
-import { GET } from '../../lib/express/expressDecorators';
+import { GetPaymentPayload, GetPaymentResponse, IRoute, Ok } from '../../.generated/operations';
+import { GetPayment } from './GetPayment';
+import { ok } from '../../lib/express/utils';
 
-const schema = z.object({
-  params: z.object({
-    id: z.string(),
-  }),
-});
+export class GetPaymentHttpRoute implements IRoute<GetPaymentPayload, Ok<GetPaymentResponse>> {
+  constructor(private mediator: IMediator) {}
 
-@GET('/payments/:id')
-export class GetPaymentHttpRoute extends JsonQuery implements IGetPaymentQuery {
-  paymentId: string;
-
-  constructor(request: Request) {
-    super();
-    const { params } = schema.parse(request);
-    this.paymentId = params.id;
-  }
-
-  protected process(mediator: IMediator) {
-    return mediator.send(GetPayment, this);
+  async handle(payload: GetPaymentPayload): Promise<Ok<GetPaymentResponse>> {
+    const response = await this.mediator.send(GetPayment, {
+      paymentId: payload.params.paymentId,
+    });
+    return ok(response);
   }
 }

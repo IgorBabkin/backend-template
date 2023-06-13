@@ -1,6 +1,9 @@
-import { constructor } from '@ibabkin/ts-constructor-injector';
-import { IExpressRoute } from './IExpressRoute';
-
 export interface IServerBuilder {
-  addRoute(Route: constructor<IExpressRoute>): this;
+  addGetRoute(url: string, operationId: string): this;
+
+  addPostRoute(url: string, operationId: string): this;
+
+  addPutRoute(url: string, operationId: string): this;
+
+  addDeleteRoute(url: string, operationId: string): this;
 }
