@@ -34,7 +34,7 @@ export function handleError(errorHandler: IErrorHandler<Response>) {
 }
 
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-export function swaggerRoutes(doc: OpenAPIV3.Document) {
+export function openapiRoutes(doc: OpenAPIV3.Document) {
   return (builder: IServerBuilder) => {
     for (const [path, p] of Object.entries(doc.paths)) {
       const url = path.replace(/{/g, ':').replace(/}/g, '');

@@ -6,12 +6,10 @@ import { ProcessEnv } from './env/ProcessEnv';
 import { Production } from './stages/Production';
 import { Development } from './stages/Development';
 import { Common } from './stages/Common';
-import { bodyParsing, handleError, handleNotFound, logRequests, swaggerRoutes } from './lib/express/expressModules';
+import { bodyParsing, handleError, handleNotFound, logRequests, openapiRoutes } from './lib/express/expressModules';
 import { ExpressErrorHandler } from './errors/ExpressErrorHandler';
 import { createLogger } from './domains/logger/ILogger';
 import * as console from 'console';
-import { AppMediator } from './lib/express/AppMediator';
-import { Validator } from './lib/express/Validator';
 import { PAYLOADS } from './.generated/validators';
 import openapi from '../swagger.json';
 import { OpenAPIV3 } from 'openapi-types';
@@ -24,8 +22,8 @@ const container = createContainer([Scope.Application])
   .add(env.production ? new Production(env) : new Development(env));
 
 const mediator = new RequestMediator(new RequestContainer(container));
-const server = new ExpressServerBuilder(new AppMediator(operations(mediator)), new Validator(PAYLOADS))
-  .addBuilderModule(swaggerRoutes(openapi as OpenAPIV3.Document))
+const server = new ExpressServerBuilder(operations(mediator), PAYLOADS)
+  .addBuilderModule(openapiRoutes(openapi as OpenAPIV3.Document))
   .addExpressModule(logRequests(createLogger('main')(container)))
   .addExpressModule(bodyParsing)
   .addExpressModule(handleError(container.resolve(ExpressErrorHandler)))

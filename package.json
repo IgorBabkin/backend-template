@@ -46,8 +46,8 @@
     ]
   },
   "dependencies": {
-    "@ibabkin/openapi-to-server": "^1.1.2",
-    "@ibabkin/openapi-to-zod": "^1.1.0",
+    "@ibabkin/openapi-to-server": "^1.1.6",
+    "@ibabkin/openapi-to-zod": "^1.1.4",
     "@ibabkin/ts-constructor-injector": "^4.0.6",
     "@ibabkin/ts-ioc-container": "^23.2.7",
     "@ibabkin/ts-request-mediator": "^0.9.6",
