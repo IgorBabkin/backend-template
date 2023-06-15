@@ -1,4 +1,4 @@
-import express, { Express, NextFunction, Request, Response } from 'express';
+import express, { Express, Request, Response } from 'express';
 import http, { Server } from 'http';
 import { IServerBuilder } from './IServerBuilder';
 import { HttpResponse, IRoute } from '../../.generated/operations';
@@ -27,33 +27,28 @@ export class ExpressServerBuilder implements IServerBuilder {
   }
 
   addDeleteRoute(url: string, operationId: string): this {
-    this.server.delete(url, (req, res, next) => this.handleRequest(operationId, { req, res, next }));
+    this.server.delete(url, (req, res, next) => this.handleRequest(operationId, { req, res }).catch((e) => next(e)));
     return this;
   }
 
   addGetRoute(url: string, operationId: string): this {
-    this.server.get(url, (req, res, next) => this.handleRequest(operationId, { req, res, next }));
+    this.server.get(url, (req, res, next) => this.handleRequest(operationId, { req, res }).catch((e) => next(e)));
     return this;
   }
 
   addPostRoute(url: string, operationId: string): this {
-    this.server.post(url, (req, res, next) => this.handleRequest(operationId, { req, res, next }));
+    this.server.post(url, (req, res, next) => this.handleRequest(operationId, { req, res }).catch((e) => next(e)));
     return this;
   }
 
   addPutRoute(url: string, operationId: string): this {
-    this.server.put(url, (req, res, next) => this.handleRequest(operationId, { req, res, next }));
+    this.server.put(url, (req, res, next) => this.handleRequest(operationId, { req, res }).catch((e) => next(e)));
     return this;
   }
 
-  private handleRequest(operationId: string, { req, res, next }: { req: Request; res: Response; next: NextFunction }) {
-    try {
-      return this.handleOperation(operationId, this.validatePayload(operationId, req))
-        .then(({ status, payload }) => res.status(status).header('ContentType', 'application/json').send(payload))
-        .catch(next);
-    } catch (e) {
-      next(e);
-    }
+  private async handleRequest(operationId: string, { req, res }: { req: Request; res: Response }) {
+    const { status, payload } = await this.handleOperation(operationId, this.validatePayload(operationId, req));
+    return res.status(status).header('ContentType', 'application/json').send(payload);
   }
 
   private handleOperation(operationId: string, data: unknown) {
