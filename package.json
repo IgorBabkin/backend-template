@@ -4,6 +4,7 @@
   "main": "esm/client.js",
   "module": "esm/client.js",
   "types": "esm/client.d.ts",
+  "sideEffects": false,
   "prisma": {
     "seed": "ts-node prisma/seed.ts"
   },
