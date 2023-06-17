@@ -1,6 +1,6 @@
 import { createLogger, format, Logger, LoggerOptions, transports } from 'winston';
 import { ILogger, ILoggerKey } from './ILogger';
-import { forKey } from '@ibabkin/ts-ioc-container';
+import { forKey } from 'ts-ioc-container';
 import { DomainError } from '../errors/DomainError';
 
 interface SerializedError {

@@ -1,7 +1,7 @@
-import { IQueryHandler } from '@ibabkin/ts-request-mediator';
+import { IQueryHandler } from 'ts-request-mediator';
 import { IPaymentRepo, IPaymentRepoKey } from '../../domains/payments/IPaymentRepo';
-import { inject } from '@ibabkin/ts-constructor-injector';
-import { by } from '@ibabkin/ts-ioc-container';
+import { inject } from 'ts-constructor-injector';
+import { by } from 'ts-ioc-container';
 import { GetPaymentResponse } from '../../.generated/operations';
 
 export interface IGetPaymentQuery {

@@ -1,5 +1,5 @@
 import { Response } from 'express';
-import { IMediator } from '@ibabkin/ts-request-mediator';
+import { IMediator } from 'ts-request-mediator';
 import { IExpressRoute, IExpressRouteContext } from '../IExpressRoute';
 
 export abstract class JsonQuery<QueryResponse = unknown> implements IExpressRoute {

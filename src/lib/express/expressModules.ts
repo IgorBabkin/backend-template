@@ -1,6 +1,6 @@
 import { Express, NextFunction, Request, Response } from 'express';
 import bodyParser from 'body-parser';
-import { IErrorHandler } from '@ibabkin/ts-request-mediator';
+import { IErrorHandler } from 'ts-request-mediator';
 import { ILogger } from '../../domains/logger/ILogger';
 import { OpenAPIV3 } from 'openapi-types';
 import { IServerBuilder } from './IServerBuilder';

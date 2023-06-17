@@ -1,6 +1,6 @@
 import { Response } from 'express';
-import { IErrorHandler } from '@ibabkin/ts-request-mediator';
-import { inject } from '@ibabkin/ts-constructor-injector';
+import { IErrorHandler } from 'ts-request-mediator';
+import { inject } from 'ts-constructor-injector';
 import { createHttpErrorContext, IHttpErrorContext } from './IHttpErrorContext';
 import {
   BadRequestErrorHandler,

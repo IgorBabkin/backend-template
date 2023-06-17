@@ -1,4 +1,4 @@
-import { IContainer, IContainerModule, Registration, withArgs } from '@ibabkin/ts-ioc-container';
+import { IContainer, IContainerModule, Registration, withArgs } from 'ts-ioc-container';
 import { IEnv } from '../env/IEnv';
 import { ProdErrorContext } from '../errors/context/ProdErrorContext';
 import { PrismaTransactionContext } from '../lib/prisma/PrismaTransactionContext';

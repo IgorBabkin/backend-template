@@ -1,5 +1,5 @@
 import { ExpressServerBuilder } from './lib/express/ExpressServerBuilder';
-import { RequestMediator, Scope } from '@ibabkin/ts-request-mediator';
+import { RequestMediator, Scope } from 'ts-request-mediator';
 import { RequestContainer } from './lib/requestMediator/container';
 import { createContainer, disposeContainer } from './lib/container/di';
 import { ProcessEnv } from './env/ProcessEnv';

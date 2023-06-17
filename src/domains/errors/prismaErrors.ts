@@ -1,4 +1,4 @@
-import { handleAsyncError } from '@ibabkin/ts-constructor-injector';
+import { handleAsyncError } from 'ts-constructor-injector';
 import { PersistenceConflictError } from './PersistenceConflictError';
 import { errorToString } from './DomainError';
 import { EntityNotFoundError } from './EntityNotFoundError';

@@ -1,6 +1,6 @@
-import { IDependencyContainer } from '@ibabkin/ts-request-mediator';
-import { IContainer, Provider } from '@ibabkin/ts-ioc-container';
-import { constructor } from '@ibabkin/ts-constructor-injector';
+import { IDependencyContainer } from 'ts-request-mediator';
+import { IContainer, Provider } from 'ts-ioc-container';
+import { constructor } from 'ts-constructor-injector';
 import { disposeContainer } from '../container/di';
 
 export class RequestContainer implements IDependencyContainer {

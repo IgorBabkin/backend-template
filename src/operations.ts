@@ -1,4 +1,4 @@
-import { IMediator } from '@ibabkin/ts-request-mediator';
+import { IMediator } from 'ts-request-mediator';
 import { Operations } from './.generated/operations';
 import { payments } from './useCase/payments/payments';
 

@@ -1,6 +1,6 @@
-import { asSingleton, Container, IContainer, perTags, provider, Resolvable, Tag } from '@ibabkin/ts-ioc-container';
-import { constructor, getHooks, hook, resolve } from '@ibabkin/ts-constructor-injector';
-import { Scope } from '@ibabkin/ts-request-mediator';
+import { asSingleton, Container, IContainer, perTags, provider, Resolvable, Tag } from 'ts-ioc-container';
+import { constructor, getHooks, hook, resolve } from 'ts-constructor-injector';
+import { Scope } from 'ts-request-mediator';
 
 export const onConstruct = hook('onConstruct');
 

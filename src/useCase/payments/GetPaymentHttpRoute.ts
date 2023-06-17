@@ -1,4 +1,4 @@
-import { IMediator } from '@ibabkin/ts-request-mediator';
+import { IMediator } from 'ts-request-mediator';
 import { GetPaymentPayload, GetPaymentResponse, IRoute, Ok } from '../../.generated/operations';
 import { GetPayment } from './GetPayment';
 import { ok } from '../../lib/express/utils';

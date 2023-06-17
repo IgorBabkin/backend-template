@@ -1,4 +1,4 @@
-import { composeDecorators, constructor, getProp, prop } from '@ibabkin/ts-constructor-injector';
+import { composeDecorators, constructor, getProp, prop } from 'ts-constructor-injector';
 import { IExpressRoute } from './IExpressRoute';
 
 type HttpMethod = 'all' | 'get' | 'post' | 'put' | 'delete' | 'patch' | 'options' | 'head';

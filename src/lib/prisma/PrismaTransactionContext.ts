@@ -1,7 +1,7 @@
 import { PrismaClient } from '@prisma/client';
-import { Fn } from '@ibabkin/ts-constructor-injector';
-import { forKey, Resolvable } from '@ibabkin/ts-ioc-container';
-import { ITransactionContext, ITransactionContextKey } from '@ibabkin/ts-request-mediator';
+import { Fn } from 'ts-constructor-injector';
+import { forKey, Resolvable } from 'ts-ioc-container';
+import { ITransactionContext, ITransactionContextKey } from 'ts-request-mediator';
 import { onDispose, perApplication } from '../container/di';
 
 @perApplication

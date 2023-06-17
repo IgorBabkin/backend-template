@@ -1,6 +1,6 @@
 import { IHttpErrorContext } from './IHttpErrorContext';
-import { constructor } from '@ibabkin/ts-constructor-injector';
-import { ErrorHandler, IErrorHandler } from '@ibabkin/ts-request-mediator';
+import { constructor } from 'ts-constructor-injector';
+import { ErrorHandler, IErrorHandler } from 'ts-request-mediator';
 import HttpError from 'standard-http-error';
 import { EntityNotFoundError } from '../domains/errors/EntityNotFoundError';
 

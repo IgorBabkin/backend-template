@@ -1,5 +1,5 @@
 import { Response } from 'express';
-import { Resolvable } from '@ibabkin/ts-ioc-container';
+import { Resolvable } from 'ts-ioc-container';
 
 export interface IHttpErrorContext {
   logError(message: string, error: unknown): void;

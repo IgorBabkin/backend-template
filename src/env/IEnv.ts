@@ -1,5 +1,5 @@
-import { Resolvable } from '@ibabkin/ts-ioc-container';
-import { Fn } from '@ibabkin/ts-constructor-injector';
+import { Resolvable } from 'ts-ioc-container';
+import { Fn } from 'ts-constructor-injector';
 
 export const IEnvKey = Symbol('IEnv');
 

@@ -1,8 +1,8 @@
-import { inject } from '@ibabkin/ts-constructor-injector';
+import { inject } from 'ts-constructor-injector';
 import { createLogger, ILogger } from '../../domains/logger/ILogger';
 import { Response } from 'express';
 import { IHttpErrorContextKey } from '../IHttpErrorContext';
-import { forKey } from '@ibabkin/ts-ioc-container';
+import { forKey } from 'ts-ioc-container';
 import { ExpressErrorContext } from './ExpressErrorContext';
 
 @forKey(IHttpErrorContextKey)

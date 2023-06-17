@@ -1,8 +1,8 @@
-import { forKey } from '@ibabkin/ts-ioc-container';
+import { forKey } from 'ts-ioc-container';
 import { IPayment, IPaymentValue } from './IPayment';
 import { IPaymentRepo, IPaymentRepoKey } from './IPaymentRepo';
 import { handlePrismaError } from '../errors/prismaErrors';
-import { inject } from '@ibabkin/ts-constructor-injector';
+import { inject } from 'ts-constructor-injector';
 import { Payment, PrismaClient } from '@prisma/client';
 import { prismaClient } from '../../lib/prisma/PrismaTransactionContext';
 import { MethodNotImplementedError } from '../errors/MethodNotImplementedError';

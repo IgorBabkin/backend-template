@@ -1,4 +1,4 @@
-import { IContainer, IContainerModule, Registration } from '@ibabkin/ts-ioc-container';
+import { IContainer, IContainerModule, Registration } from 'ts-ioc-container';
 import { IEnv } from '../env/IEnv';
 import { PaymentRepo } from '../domains/payments/PaymentRepo';
 

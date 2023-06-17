@@ -1,4 +1,4 @@
-import { IMediator } from '@ibabkin/ts-request-mediator';
+import { IMediator } from 'ts-request-mediator';
 import { Response } from 'express';
 
 export interface IExpressRouteContext {
