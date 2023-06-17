@@ -1,6 +1,6 @@
 {
   "name": "@ibabkin/backend-template",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "esm/client.js",
   "module": "esm/client.js",
   "types": "esm/client.d.ts",
