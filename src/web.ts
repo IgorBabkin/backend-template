@@ -11,7 +11,7 @@ import { ExpressErrorHandler } from './errors/ExpressErrorHandler';
 import { createLogger } from './domains/logger/ILogger';
 import * as console from 'console';
 import { PAYLOADS } from './.generated/validators';
-import openapi from '../swagger.json';
+import openapi from './.generated/swagger.json';
 import { OpenAPIV3 } from 'openapi-types';
 import { operations } from './operations';
 
