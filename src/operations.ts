@@ -1,9 +1,9 @@
-import { IMediator } from 'ts-request-mediator';
 import { Operations } from './.generated/operations';
-import { payments } from './useCase/payments/payments';
+import { IMediator } from 'ts-request-mediator';
+import { todos } from './useCase/todo/todos';
 
 export function operations(mediator: IMediator): Operations {
   return {
-    ...payments(mediator),
+    ...todos(mediator),
   };
 }

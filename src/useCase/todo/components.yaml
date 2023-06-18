@@ -1,0 +1,13 @@
+Todo:
+  required:
+    - id
+    - title
+    - description
+  type: object
+  properties:
+    id:
+      type: string
+    title:
+      type: string
+    description:
+      type: string

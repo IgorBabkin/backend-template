@@ -1,9 +1,9 @@
 openapi: 3.0.0
 info:
-  title: Simple Inventory API
+  title: Todo API
   description: This is a simple API
   contact:
-    email: you@your-company.com
+    email: igba14@gmail.com
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
@@ -18,9 +18,9 @@ tags:
     description: Operations available to regular developers
 paths:
   !!import/merge
-    - useCase/payments/routes.yaml
+    - useCase/todo/routes.yaml
 
 components:
   schemas:
     !!import/merge
-      - useCase/payments/components.yaml
+      - useCase/todo/components.yaml

@@ -38,18 +38,27 @@ export function openapiRoutes(doc: OpenAPIV3.Document) {
   return (builder: IServerBuilder) => {
     for (const [path, p] of Object.entries(doc.paths)) {
       const url = path.replace(/{/g, ':').replace(/}/g, '');
+      const route = p?.get ?? p?.post ?? p?.put ?? p?.delete;
+
+      if (!route) {
+        throw new Error(`No route found for path ${path}`);
+      }
+
+      const options = { tags: route.tags ?? [] };
+      const operationId = route.operationId!;
+
       if (p?.get) {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        builder.addGetRoute(url, p.get.operationId!);
+        builder.addGetRoute(url, operationId!, options);
       }
       if (p?.post) {
-        builder.addPostRoute(url, p.post.operationId!);
+        builder.addPostRoute(url, operationId!, options);
       }
       if (p?.put) {
-        builder.addPutRoute(url, p.put.operationId!);
+        builder.addPutRoute(url, operationId!, options);
       }
       if (p?.delete) {
-        builder.addDeleteRoute(url, p.delete.operationId!);
+        builder.addDeleteRoute(url, operationId!, options);
       }
     }
   };
