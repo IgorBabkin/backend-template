@@ -11,7 +11,7 @@
   "scripts": {
     "start": "node -r reflect-metadata -r dotenv/config ./build/web.js",
     "start:dev": "ts-node -r reflect-metadata -r dotenv/config src/web.ts",
-    "watch:start:dev": "nodemon --exec 'npm run start:dev'",
+    "watch:start:dev": "nodemon --exec 'npm run generate && npm run start:dev'",
     "start:infra": "docker-compose up",
     "build": "npm run db:migrate && npm run compile",
     "compile": "prisma generate && rimraf build && tsc --project tsconfig.production.json --outDir build",
@@ -25,7 +25,7 @@
     "lint:fix": "npm run lint --fix",
     "prepare": "husky install",
     "test": "jest",
-    "generate": "npm run generate:server && npm run generate:client && npm run generate:validators && npm run generate:format",
+    "generate": "npm run db:generate && npm run generate:server && npm run generate:client && npm run generate:validators && npm run generate:format",
     "generate:server": "openapi-to-server --input src/swagger.yaml --output src/.generated/operations.d.ts --json",
     "generate:client": "openapi-to-client --input src/swagger.yaml --output src/.generated/client.ts",
     "generate:validators": "openapi-to-zod --input src/swagger.yaml --output src/.generated/validators.ts",

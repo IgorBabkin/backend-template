@@ -1,6 +1,7 @@
 {
   "watch": [
-    "src/"
+    "./src",
+    "./prisma/schema.prisma"
   ],
   "ignore": [
     "**/*.spec.ts",
@@ -11,5 +12,5 @@
   "env": {
     "NODE_ENV": "development"
   },
-  "ext": "js,json,ts,hbs,xml"
+  "ext": "js,json,ts,prisma"
 }
