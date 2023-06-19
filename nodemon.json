@@ -7,10 +7,12 @@
     "**/*.spec.ts",
     "**/__tests__",
     ".git",
-    "node_modules"
+    "node_modules",
+    ".generated",
+    "esm"
   ],
   "env": {
     "NODE_ENV": "development"
   },
-  "ext": "js,json,ts,prisma"
+  "ext": "js,json,ts,prisma,yaml"
 }
