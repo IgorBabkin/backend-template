@@ -4,7 +4,7 @@ import { PrismaTransactionContext } from '../lib/prisma/PrismaTransactionContext
 import { PrismaClient } from '@prisma/client';
 import { createWinstonLogger, WinstonLogger } from '../domains/logger/WinstonLogger';
 import { format } from 'winston';
-import { DevResponse } from '../errors/response/DevResponse';
+import { DevResponse } from '../domains/response/DevResponse';
 
 export class Development implements IContainerModule {
   constructor(private env: IEnv) {}

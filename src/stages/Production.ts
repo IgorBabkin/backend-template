@@ -2,7 +2,7 @@ import { IContainer, IContainerModule, Registration, withArgs } from 'ts-ioc-con
 import { IEnv } from '../env/IEnv';
 import { PrismaTransactionContext } from '../lib/prisma/PrismaTransactionContext';
 import { createWinstonLogger, WinstonLogger } from '../domains/logger/WinstonLogger';
-import { ProdResponse } from '../errors/response/ProdResponse';
+import { ProdResponse } from '../domains/response/ProdResponse';
 
 export class Production implements IContainerModule {
   constructor(private env: IEnv) {}

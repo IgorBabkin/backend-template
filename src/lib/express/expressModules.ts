@@ -4,6 +4,7 @@ import { IErrorHandler } from 'ts-request-mediator';
 import { ILogger } from '../../domains/logger/ILogger';
 import { OpenAPIV3 } from 'openapi-types';
 import { IServerBuilder } from './IServerBuilder';
+import { IExpressErrorHandler } from './IExpressErrorHandler';
 
 export function bodyParsing(app: Express) {
   app.use(bodyParser.json({ limit: '1mb' }));
@@ -25,7 +26,7 @@ export function handleNotFound(app: Express) {
   });
 }
 
-export function handleError(errorHandler: IErrorHandler<Response>) {
+export function handleError(errorHandler: IExpressErrorHandler) {
   return (app: Express) => {
     app.use((err: unknown, req: Request, response: Response, next: NextFunction) => {
       errorHandler.handle(err, response);

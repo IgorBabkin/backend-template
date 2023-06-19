@@ -7,7 +7,7 @@ import { Production } from './stages/Production';
 import { Development } from './stages/Development';
 import { Common } from './stages/Common';
 import { bodyParsing, handleError, handleNotFound, logRequests, openapiRoutes } from './lib/express/expressModules';
-import { ExpressErrorHandler } from './errors/ExpressErrorHandler';
+import { ExpressErrorHandler } from './ExpressErrorHandler';
 import { createLogger } from './domains/logger/ILogger';
 import * as console from 'console';
 import { PAYLOADS } from './.generated/validators';
