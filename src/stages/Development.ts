@@ -1,10 +1,10 @@
 import { IContainer, IContainerModule, Registration, withArgs } from 'ts-ioc-container';
 import { IEnv } from '../env/IEnv';
-import { DevErrorContext } from '../errors/context/DevErrorContext';
 import { PrismaTransactionContext } from '../lib/prisma/PrismaTransactionContext';
 import { PrismaClient } from '@prisma/client';
 import { createWinstonLogger, WinstonLogger } from '../domains/logger/WinstonLogger';
 import { format } from 'winston';
+import { DevResponse } from '../errors/response/DevResponse';
 
 export class Development implements IContainerModule {
   constructor(private env: IEnv) {}
@@ -30,6 +30,6 @@ export class Development implements IContainerModule {
           ),
         ),
       )
-      .add(Registration.fromClass(DevErrorContext));
+      .add(Registration.fromClass(DevResponse));
   }
 }

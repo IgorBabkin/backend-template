@@ -1,8 +1,8 @@
 import { IContainer, IContainerModule, Registration, withArgs } from 'ts-ioc-container';
 import { IEnv } from '../env/IEnv';
-import { ProdErrorContext } from '../errors/context/ProdErrorContext';
 import { PrismaTransactionContext } from '../lib/prisma/PrismaTransactionContext';
 import { createWinstonLogger, WinstonLogger } from '../domains/logger/WinstonLogger';
+import { ProdResponse } from '../errors/response/ProdResponse';
 
 export class Production implements IContainerModule {
   constructor(private env: IEnv) {}
@@ -11,6 +11,6 @@ export class Production implements IContainerModule {
     container
       .add(Registration.fromClass(WinstonLogger).pipe(withArgs(createWinstonLogger({ level: this.env.logLevel }))))
       .add(Registration.fromClass(PrismaTransactionContext))
-      .add(Registration.fromClass(ProdErrorContext));
+      .add(Registration.fromClass(ProdResponse));
   }
 }

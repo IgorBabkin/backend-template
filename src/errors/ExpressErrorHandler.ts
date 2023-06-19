@@ -1,32 +1,38 @@
 import { Response } from 'express';
 import { IErrorHandler } from 'ts-request-mediator';
 import { inject } from 'ts-constructor-injector';
-import { createHttpErrorContext, IHttpErrorContext } from './IHttpErrorContext';
 import {
   BadRequestErrorHandler,
+  ErrorHandler,
   ForbiddenErrorHandler,
   InternalErrorHandler,
   NotFoundErrorHandler,
   ServiceUnavailableErrorHandler,
   UnAuthorizedRequestErrorHandler,
-} from './HttpErrorHandler';
+} from './ErrorHandler';
+import { byArr } from '../lib/container/di';
+import { ExpressResponse } from './response/ExpressResponse';
+import { responseFactory } from './response/IResponse';
+import { by } from 'ts-ioc-container';
 
 export class ExpressErrorHandler implements IErrorHandler<Response> {
-  private readonly handler: IErrorHandler<IHttpErrorContext>;
-
   constructor(
-    @inject(createHttpErrorContext)
-    private createErrorContext: (response: Response) => IHttpErrorContext,
-  ) {
-    this.handler = new InternalErrorHandler();
-    this.handler = new BadRequestErrorHandler(this.handler);
-    this.handler = new UnAuthorizedRequestErrorHandler(this.handler);
-    this.handler = new NotFoundErrorHandler(this.handler);
-    this.handler = new ServiceUnavailableErrorHandler(this.handler);
-    this.handler = new ForbiddenErrorHandler(this.handler);
-  }
+    @inject(
+      byArr<ErrorHandler>(
+        BadRequestErrorHandler,
+        UnAuthorizedRequestErrorHandler,
+        NotFoundErrorHandler,
+        ServiceUnavailableErrorHandler,
+        ForbiddenErrorHandler,
+      ),
+    )
+    private handlers: ErrorHandler[],
+    @inject(by(InternalErrorHandler)) private baseError: ErrorHandler,
+    @inject(responseFactory) private createResponse: (response: Response) => ExpressResponse,
+  ) {}
 
   handle(error: unknown, response: Response): void {
-    this.handler.handle(error, this.createErrorContext(response));
+    const handler = this.handlers.find((handler) => handler.isMatch(error)) ?? this.baseError;
+    return handler.handle(error, this.createResponse(response));
   }
 }

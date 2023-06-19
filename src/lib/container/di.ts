@@ -40,3 +40,8 @@ export const perRequest = provider(asSingleton(), perTags(Scope.Request));
 export const perUseCase = provider(asSingleton(), perTags(Scope.UseCase));
 export const perService = provider(asSingleton(), perTags(Scope.Service));
 export const singleton = provider(asSingleton());
+
+export const byArr =
+  <T>(...values: constructor<T>[]): Resolver<T[]> =>
+  (container) =>
+    values.map((value) => container.resolve(value));
