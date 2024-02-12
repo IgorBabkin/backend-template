@@ -1,7 +1,6 @@
 import { IQueryHandler } from 'ts-request-mediator';
 import { ITodoRepo, ITodoRepoKey } from '../../domains/todo/ITodoRepo';
-import { inject } from 'ts-constructor-injector';
-import { by } from 'ts-ioc-container';
+import { by, inject } from 'ts-ioc-container';
 
 type Query = { title: string; description: string };
 

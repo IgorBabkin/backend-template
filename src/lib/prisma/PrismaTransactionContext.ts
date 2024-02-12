@@ -1,11 +1,10 @@
 import { PrismaClient } from '@prisma/client';
-import { Fn } from 'ts-constructor-injector';
-import { forKey, Resolvable } from 'ts-ioc-container';
+import { key, Resolvable } from 'ts-ioc-container';
 import { ITransactionContext, ITransactionContextKey } from 'ts-request-mediator';
 import { onDispose, perApplication } from '../container/di';
 
 @perApplication
-@forKey(ITransactionContextKey)
+@key(ITransactionContextKey)
 export class PrismaTransactionContext implements ITransactionContext {
   constructor(public dbClient: PrismaClient = new PrismaClient()) {}
 
@@ -21,5 +20,4 @@ export class PrismaTransactionContext implements ITransactionContext {
   }
 }
 
-export const prismaClient: Fn<Resolvable, PrismaClient> = (l) =>
-  l.resolve<PrismaTransactionContext>(ITransactionContextKey).dbClient;
+export const prismaClient = (l: Resolvable) => l.resolve<PrismaTransactionContext>(ITransactionContextKey).dbClient;

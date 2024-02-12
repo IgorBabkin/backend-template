@@ -1,12 +1,11 @@
-import { forKey } from 'ts-ioc-container';
 import { PrismaClient, Todo } from '@prisma/client';
 import { ITodo, ITodoValue } from './ITodo';
-import { inject } from 'ts-constructor-injector';
 import { prismaClient } from '../../lib/prisma/PrismaTransactionContext';
 import { handlePrismaError } from '../errors/prismaErrors';
 import { ITodoRepo, ITodoRepoKey } from './ITodoRepo';
+import { inject, key } from 'ts-ioc-container';
 
-@forKey(ITodoRepoKey)
+@key(ITodoRepoKey)
 export class TodoRepo implements ITodoRepo {
   static toDomain(record: Todo): ITodo {
     return {

@@ -1,8 +1,7 @@
 import { IQueryHandler } from 'ts-request-mediator';
 import { GetTodoResponse } from '../../.generated/operations';
 import { ITodoRepo, ITodoRepoKey } from '../../domains/todo/ITodoRepo';
-import { inject } from 'ts-constructor-injector';
-import { by } from 'ts-ioc-container';
+import { by, inject } from 'ts-ioc-container';
 
 type Query = { id: string };
 

@@ -1,5 +1,4 @@
 import { Resolvable } from 'ts-ioc-container';
-import { Fn } from 'ts-constructor-injector';
 
 export const IEnvKey = Symbol('IEnv');
 
@@ -16,10 +15,9 @@ export enum LogLevel {
 export interface IEnv {
   port: number;
   logLevel: LogLevel;
-  production: boolean;
 }
 
 export const env =
-  <T extends keyof IEnv>(key: T): Fn<Resolvable, IEnv[T]> =>
-  (l) =>
+  <T extends keyof IEnv>(key: T) =>
+  (l: Resolvable) =>
     l.resolve<IEnv>(IEnvKey)[key];

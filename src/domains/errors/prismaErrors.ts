@@ -1,12 +1,12 @@
-import { handleAsyncError } from 'ts-constructor-injector';
 import { PersistenceConflictError } from './PersistenceConflictError';
 import { errorToString } from './DomainError';
 import { EntityNotFoundError } from './EntityNotFoundError';
 import { PersistenceError } from './PersistenceError';
 import { UnknownError } from './UnknownError';
 import { Prisma } from '@prisma/client';
+import { asyncHandleError } from './asyncHandleError';
 
-export const handlePrismaError = handleAsyncError((error: unknown) => {
+export const handlePrismaError = asyncHandleError((error: unknown) => {
   if (error instanceof Prisma.PrismaClientKnownRequestError) {
     switch (error.code) {
       case 'P2002':
