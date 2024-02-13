@@ -1,11 +1,7 @@
 import { createLogger, ILogger } from '../../domains/logger/ILogger';
 import { Response } from 'express';
 import { DomainError } from '../../domains/errors/DomainError';
-import {
-  Payload,
-  IExpressErrorHandlerStrategy,
-  IExpressErrorHandlerStrategyKey,
-} from './DomainErrorHandler';
+import { Payload, IExpressErrorHandlerStrategy, IExpressErrorHandlerStrategyKey } from './DomainErrorHandler';
 import { perApplication } from '../../lib/container/di';
 import { inject, key } from 'ts-ioc-container';
 
