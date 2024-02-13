@@ -1,4 +1,4 @@
-import { createLogger, format, Logger, LoggerOptions, transports } from 'winston';
+import { Logger } from 'winston';
 import { ILogger, ILoggerKey } from './ILogger';
 import { DomainError } from '../errors/DomainError';
 import { key } from 'ts-ioc-container';
@@ -62,12 +62,4 @@ export class WinstonLogger implements ILogger {
       return { errorMessage: `${error}` };
     }
   }
-}
-
-export function createWinstonLogger(options: Partial<LoggerOptions>): Logger {
-  return createLogger({
-    format: format.combine(format.json()),
-    transports: [new transports.Console()],
-    ...options,
-  });
 }

@@ -1,7 +1,7 @@
 import { PrismaClient, Todo } from '@prisma/client';
 import { ITodo, ITodoValue } from './ITodo';
 import { prismaClient } from '../../lib/prisma/PrismaTransactionContext';
-import { handlePrismaError } from '../../lib/prisma/prismaErrors';
+import { handlePrismaError } from '../../lib/prisma/handlePrismaError';
 import { ITodoRepo, ITodoRepoKey } from './ITodoRepo';
 import { inject, key } from 'ts-ioc-container';
 

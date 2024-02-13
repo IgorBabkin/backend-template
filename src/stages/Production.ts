@@ -1,13 +1,16 @@
 import { args, IContainer, IContainerModule, Registration } from 'ts-ioc-container';
 import { IEnv } from '../env/IEnv';
 import { PrismaTransactionContext } from '../lib/prisma/PrismaTransactionContext';
-import { createWinstonLogger, WinstonLogger } from '../domains/logger/WinstonLogger';
+import { WinstonLogger } from '../domains/logger/WinstonLogger';
 import { PrismaClient } from '@prisma/client';
 import { ProdErrorHandleStrategy } from '../useCase/errorHandler/ProdErrorHandleStrategy';
+import { createLogger, format, transports } from 'winston';
 
 export class Production implements IContainerModule {
-  private logger = createWinstonLogger({
+  private logger = createLogger({
     level: this.env.logLevel,
+    format: format.combine(format.json()),
+    transports: [new transports.Console()],
   });
 
   private prismaClient = new PrismaClient();
