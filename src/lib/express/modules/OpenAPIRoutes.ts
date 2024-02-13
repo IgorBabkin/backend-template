@@ -1,4 +1,4 @@
-import { IServerBuilder, IServerBuilderModule } from './IServerBuilder';
+import { IServerBuilder, IServerBuilderModule } from '../IServerBuilder';
 import { OpenAPIV3 } from 'openapi-types';
 import { HttpResponse, Route, RouteOptions } from '@ibabkin/openapi-to-server';
 import { Request, Response } from 'express';

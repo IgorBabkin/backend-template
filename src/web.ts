@@ -5,7 +5,7 @@ import { ProcessEnv } from './env/ProcessEnv';
 import { Production } from './stages/Production';
 import { Development } from './stages/Development';
 import { Common } from './stages/Common';
-import { bodyParsing, handleNotFound } from './lib/express/expressModules';
+import { bodyParsing, handleNotFound } from './lib/express/modules/expressModules';
 import * as console from 'console';
 import { PAYLOADS } from './.generated/validators';
 import openapi from './.generated/swagger.json';
@@ -13,8 +13,8 @@ import { OpenAPIV3 } from 'openapi-types';
 import { operations } from './operations';
 import * as process from 'process';
 import { DomainErrorHandler } from './useCase/errorHandler/DomainErrorHandler';
-import { OpenAPIRoutes } from './lib/express/OpenAPIRoutes';
-import { RequestLogger } from './lib/express/RequestLogger';
+import { OpenAPIRoutes } from './lib/express/modules/OpenAPIRoutes';
+import { RequestLogger } from './lib/express/modules/RequestLogger';
 
 const env = ProcessEnv.fromEnv(process.env);
 

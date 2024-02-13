@@ -1,7 +1,9 @@
 import { Operations } from './.generated/operations';
-import { todos } from './useCase/todo/todos';
 import { IContainer } from 'ts-ioc-container';
+import { GetTodoHTTPRoute } from './useCase/todo/GetTodoRoute';
+import { AddTodoHTTPRoute } from './useCase/todo/AddTodoRoute';
 
 export const operations = (container: IContainer): Operations => ({
-  ...todos(container),
+  getTodo: container.resolve(GetTodoHTTPRoute),
+  addTodo: container.resolve(AddTodoHTTPRoute),
 });

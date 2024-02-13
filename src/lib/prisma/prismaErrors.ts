@@ -1,10 +1,10 @@
-import { PersistenceConflictError } from './PersistenceConflictError';
-import { errorToString } from './DomainError';
-import { EntityNotFoundError } from './EntityNotFoundError';
-import { PersistenceError } from './PersistenceError';
-import { UnknownError } from './UnknownError';
+import { PersistenceConflictError } from '../../domains/errors/PersistenceConflictError';
+import { errorToString } from '../../domains/errors/DomainError';
+import { EntityNotFoundError } from '../../domains/errors/EntityNotFoundError';
+import { PersistenceError } from '../../domains/errors/PersistenceError';
+import { UnknownError } from '../../domains/errors/UnknownError';
 import { Prisma } from '@prisma/client';
-import { asyncHandleError } from './asyncHandleError';
+import { asyncHandleError } from '../asyncHandleError';
 
 export const handlePrismaError = asyncHandleError((error: unknown) => {
   if (error instanceof Prisma.PrismaClientKnownRequestError) {
