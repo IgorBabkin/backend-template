@@ -22,3 +22,5 @@ export const perRequest = provider(singleton(), tags(Scope.Request));
 export const perUseCase = provider(singleton(), tags(Scope.UseCase));
 export const perService = provider(singleton(), tags(Scope.Service));
 export const asSingleton = provider(singleton());
+
+export const scope = (l: Resolvable) => l;

@@ -1,13 +1,14 @@
-import { AddTodoPayload, AddTodoRoute, Created } from '../../.generated/operations';
+import { AddTodoPayload, AddTodoRoute } from '../../.generated/operations';
 import { IMediator } from 'ts-request-mediator';
-import { created } from '../../lib/express/utils';
 import { AddTodo } from './AddTodo';
+import { Created } from '@ibabkin/openapi-to-server';
+import { IResponseFactory } from '../../lib/express/IResponseFactory';
 
 export class AddTodoHTTPRoute implements AddTodoRoute {
-  constructor(private mediator: IMediator) {}
+  constructor(private mediator: IMediator, private responseFactory: IResponseFactory) {}
 
   async handle({ body }: AddTodoPayload): Promise<Created> {
     await this.mediator.send(AddTodo, { title: body.title, description: body.description });
-    return created;
+    return this.responseFactory.created();
   }
 }

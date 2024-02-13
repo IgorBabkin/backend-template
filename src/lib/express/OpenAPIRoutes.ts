@@ -1,6 +1,6 @@
 import { IServerBuilder, IServerBuilderModule } from './IServerBuilder';
 import { OpenAPIV3 } from 'openapi-types';
-import { HttpResponse, Route, RouteOptions } from '../../.generated/operations';
+import { HttpResponse, Route, RouteOptions } from '@ibabkin/openapi-to-server';
 import { Request, Response } from 'express';
 import { ZodType } from 'zod';
 
@@ -9,8 +9,7 @@ export class OpenAPIRoutes implements IServerBuilderModule {
     private doc: OpenAPIV3.Document,
     private operations: Record<string, Route<unknown, HttpResponse<unknown>>>,
     private validators: Record<string, ZodType>,
-  ) {
-  }
+  ) {}
 
   applyTo(builder: IServerBuilder): void {
     for (const [path, p] of Object.entries(this.doc.paths)) {

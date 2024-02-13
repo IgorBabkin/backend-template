@@ -1,8 +1,8 @@
 import { GetTodoHTTPRoute } from './GetTodoRoute';
-import { IMediator } from 'ts-request-mediator';
 import { AddTodoHTTPRoute } from './AddTodoRoute';
+import { IContainer } from 'ts-ioc-container';
 
-export const todos = (mediator: IMediator) => ({
-  getTodo: new GetTodoHTTPRoute(mediator),
-  addTodo: new AddTodoHTTPRoute(mediator),
+export const todos = (container: IContainer) => ({
+  getTodo: container.resolve(GetTodoHTTPRoute),
+  addTodo: container.resolve(AddTodoHTTPRoute),
 });

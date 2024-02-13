@@ -63,7 +63,7 @@
     "@commitlint/cli": "^17.6.5",
     "@commitlint/config-conventional": "^17.6.5",
     "@faker-js/faker": "^8.0.2",
-    "@ibabkin/openapi-to-server": "^1.9.1",
+    "@ibabkin/openapi-to-server": "^1.9.2",
     "@ibabkin/openapi-to-zod": "^1.2.13",
     "@types/dotenv": "^8.2.0",
     "@types/express": "^4.17.17",

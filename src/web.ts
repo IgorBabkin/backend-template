@@ -1,5 +1,5 @@
 import { ExpressServerBuilder } from './lib/express/ExpressServerBuilder';
-import { RequestMediator, Scope } from 'ts-request-mediator';
+import { Scope } from 'ts-request-mediator';
 import { createContainer, disposeContainer } from './lib/container/di';
 import { ProcessEnv } from './env/ProcessEnv';
 import { Production } from './stages/Production';
@@ -13,7 +13,6 @@ import { OpenAPIV3 } from 'openapi-types';
 import { operations } from './operations';
 import * as process from 'process';
 import { DomainErrorHandler } from './useCase/errorHandler/DomainErrorHandler';
-import { RequestContainer } from './lib/container/RequestContainer';
 import { OpenAPIRoutes } from './lib/express/OpenAPIRoutes';
 import { RequestLogger } from './lib/express/RequestLogger';
 
@@ -23,9 +22,8 @@ const container = createContainer(Scope.Application)
   .use(new Common())
   .use(process.env.NODE_ENV === 'production' ? new Production(env) : new Development(env));
 
-const mediator = new RequestMediator(new RequestContainer(container));
 const server = new ExpressServerBuilder()
-  .useModule(new OpenAPIRoutes(openapi as OpenAPIV3.Document, operations(mediator), PAYLOADS))
+  .useModule(new OpenAPIRoutes(openapi as OpenAPIV3.Document, operations(container), PAYLOADS))
   .useModule(container.resolve(DomainErrorHandler))
   .useModule(container.resolve(RequestLogger))
   .addExpressModule(bodyParsing)

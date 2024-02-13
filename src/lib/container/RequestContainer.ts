@@ -1,9 +1,9 @@
 import { IDependencyContainer } from 'ts-request-mediator';
-import { IContainer, Provider, constructor } from 'ts-ioc-container';
-import { disposeContainer } from './di';
+import { IContainer, Provider, constructor, inject } from 'ts-ioc-container';
+import { disposeContainer, scope } from './di';
 
 export class RequestContainer implements IDependencyContainer {
-  constructor(private container: IContainer) {}
+  constructor(@inject(scope) private container: IContainer) {}
 
   createScope(tags: string[]): IDependencyContainer {
     return new RequestContainer(this.container.createScope(...tags));

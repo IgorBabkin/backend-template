@@ -1,9 +1,7 @@
 import { Operations } from './.generated/operations';
-import { IMediator } from 'ts-request-mediator';
 import { todos } from './useCase/todo/todos';
+import { IContainer } from 'ts-ioc-container';
 
-export function operations(mediator: IMediator): Operations {
-  return {
-    ...todos(mediator),
-  };
-}
+export const operations = (container: IContainer): Operations => ({
+  ...todos(container),
+});
