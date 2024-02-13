@@ -1,6 +1,5 @@
 import { GetTodoPayload, GetTodoResponse, GetTodoRoute } from '../../.generated/operations';
 import { IMediator } from 'ts-request-mediator';
-import { ok } from '../../lib/express/utils';
 import { GetTodo } from './GetTodo';
 import { Ok } from '@ibabkin/openapi-to-server';
 import { by, inject } from 'ts-ioc-container';
@@ -11,10 +10,10 @@ export class GetTodoHTTPRoute implements GetTodoRoute {
   constructor(
     @inject(by(IRequestMediatorKey)) private mediator: IMediator,
     @inject(by(IResponseFactoryKey)) private responseFactory: IResponseFactory,
-    ) {}
+  ) {}
 
   async handle({ params }: GetTodoPayload): Promise<Ok<GetTodoResponse>> {
     const response = await this.mediator.send(GetTodo, { id: params.id });
-    return ok(response);
+    return this.responseFactory.ok(response);
   }
 }
