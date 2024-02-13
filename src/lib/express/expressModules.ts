@@ -1,21 +1,5 @@
 import { Express, Request, Response } from 'express';
 import bodyParser from 'body-parser';
-import { createLogger, ILogger } from '../../domains/logger/ILogger';
-import { inject } from 'ts-ioc-container';
-import { IServerBuilder, IServerBuilderModule } from './IServerBuilder';
-
-export class RequestLogger implements IServerBuilderModule {
-  constructor(@inject(createLogger('RequestLogger')) private logger: ILogger) {}
-
-  applyTo(builder: IServerBuilder): void {
-    builder.addExpressModule((app) => {
-      app.use((req, res, next) => {
-        this.logger.http('processing request', { url: req.originalUrl, body: req.body });
-        next();
-      });
-    });
-  }
-}
 
 export function bodyParsing(app: Express) {
   app.use(bodyParser.json({ limit: '1mb' }));

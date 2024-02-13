@@ -5,7 +5,7 @@ import { ProcessEnv } from './env/ProcessEnv';
 import { Production } from './stages/Production';
 import { Development } from './stages/Development';
 import { Common } from './stages/Common';
-import { bodyParsing, handleNotFound, RequestLogger } from './lib/express/expressModules';
+import { bodyParsing, handleNotFound } from './lib/express/expressModules';
 import * as console from 'console';
 import { PAYLOADS } from './.generated/validators';
 import openapi from './.generated/swagger.json';
@@ -15,6 +15,7 @@ import * as process from 'process';
 import { DomainErrorHandler } from './useCase/errorHandler/DomainErrorHandler';
 import { RequestContainer } from './lib/container/RequestContainer';
 import { OpenAPIRoutes } from './lib/express/OpenAPIRoutes';
+import { RequestLogger } from './lib/express/RequestLogger';
 
 const env = ProcessEnv.fromEnv(process.env);
 
