@@ -9,7 +9,7 @@
 - run `npm install`
 - run `npm run start:infra`
 - run `npm run db:migrate`
-- run `cd src && mkdir .generated
+- run `mkdir src/.generated`
 - run `npm run generate`
 - run `npm run watch:start:dev`
 - open http://localhost:3000
