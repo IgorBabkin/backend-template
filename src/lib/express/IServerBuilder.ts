@@ -1,11 +1,11 @@
-import { RouteOptions } from '../../.generated/operations';
+import { Express } from 'express';
 
 export interface IServerBuilder {
-  addGetRoute(url: string, operationId: string, context: RouteOptions): this;
+  useModule(module: IServerBuilderModule): this;
 
-  addPostRoute(url: string, operationId: string, context: RouteOptions): this;
+  addExpressModule(module: (app: Express) => void): this;
+}
 
-  addPutRoute(url: string, operationId: string, context: RouteOptions): this;
-
-  addDeleteRoute(url: string, operationId: string, context: RouteOptions): this;
+export interface IServerBuilderModule {
+  applyTo(builder: IServerBuilder): void;
 }

@@ -5,8 +5,11 @@ import { ProcessEnv } from './env/ProcessEnv';
 import { Production } from './stages/Production';
 import { Development } from './stages/Development';
 import { Common } from './stages/Common';
-import { bodyParsing, handleError, handleNotFound, logRequests, openapiRoutes } from './lib/express/expressModules';
-import { createLogger } from './domains/logger/ILogger';
+import {
+  bodyParsing,
+  handleNotFound,
+  RequestLogger,
+} from './lib/express/expressModules';
 import * as console from 'console';
 import { PAYLOADS } from './.generated/validators';
 import openapi from './.generated/swagger.json';
@@ -15,6 +18,7 @@ import { operations } from './operations';
 import * as process from 'process';
 import { DomainErrorHandler } from './useCase/errorHandler/DomainErrorHandler';
 import { RequestContainer } from './lib/container/RequestContainer';
+import { OpenAPIRoutes } from './lib/express/OpenAPIRoutes';
 
 const env = new ProcessEnv(process.env);
 
@@ -23,11 +27,11 @@ const container = createContainer(Scope.Application)
   .use(process.env.NODE_ENV === 'production' ? new Production(env) : new Development(env));
 
 const mediator = new RequestMediator(new RequestContainer(container));
-const server = new ExpressServerBuilder(operations(mediator), PAYLOADS)
-  .addBuilderModule(openapiRoutes(openapi as OpenAPIV3.Document))
-  .addExpressModule(logRequests(createLogger('main')(container)))
+const server = new ExpressServerBuilder()
+  .useModule(new OpenAPIRoutes(openapi as OpenAPIV3.Document, operations(mediator), PAYLOADS))
+  .useModule(container.resolve(DomainErrorHandler))
+  .useModule(container.resolve(RequestLogger))
   .addExpressModule(bodyParsing)
-  .addExpressModule(handleError(container.resolve(DomainErrorHandler)))
   .addExpressModule(handleNotFound)
   .build();
 
