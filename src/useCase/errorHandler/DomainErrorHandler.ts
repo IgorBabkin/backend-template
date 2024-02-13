@@ -3,8 +3,9 @@ import { PersistenceError } from '../../domains/errors/PersistenceError';
 import { EntityNotFoundError } from '../../domains/errors/EntityNotFoundError';
 import { by, inject } from 'ts-ioc-container';
 import { IServerBuilder, IServerBuilderModule } from '../../lib/express/IServerBuilder';
+import HttpError from 'standard-http-error';
 
-export type HttpError = {
+export type Payload = {
   statusCode: number;
   error: unknown;
 };
@@ -12,7 +13,7 @@ export type HttpError = {
 export const IExpressErrorHandlerStrategyKey = Symbol('IExpressErrorHandlerStrategy');
 
 export interface IExpressErrorHandlerStrategy {
-  sendHttpError(response: Response, { statusCode, error }: HttpError): void;
+  sendHttpError(response: Response, { statusCode, error }: Payload): void;
 }
 
 export class DomainErrorHandler implements IServerBuilderModule {
@@ -30,11 +31,11 @@ export class DomainErrorHandler implements IServerBuilderModule {
 
   private badRequest(error: unknown, response: Response): void {
     if (error instanceof PersistenceError || error instanceof EntityNotFoundError) {
-      this.strategy.sendHttpError(response, { statusCode: 400, error });
+      this.strategy.sendHttpError(response, { statusCode: HttpError.BAD_REQUEST, error });
     }
   }
 
   private internalServerError(error: unknown, response: Response): void {
-    this.strategy.sendHttpError(response, { statusCode: 500, error });
+    this.strategy.sendHttpError(response, { statusCode: HttpError.INTERNAL_SERVER_ERROR, error });
   }
 }

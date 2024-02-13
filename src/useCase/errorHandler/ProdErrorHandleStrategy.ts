@@ -1,6 +1,6 @@
 import { createLogger, ILogger } from '../../domains/logger/ILogger';
 import { DomainError } from '../../domains/errors/DomainError';
-import { HttpError, IExpressErrorHandlerStrategy, IExpressErrorHandlerStrategyKey } from './DomainErrorHandler';
+import { Payload, IExpressErrorHandlerStrategy, IExpressErrorHandlerStrategyKey } from './DomainErrorHandler';
 import { inject, key } from 'ts-ioc-container';
 import { perApplication } from '../../lib/container/di';
 import { Response } from 'express';
@@ -10,7 +10,7 @@ import { Response } from 'express';
 export class ProdErrorHandleStrategy implements IExpressErrorHandlerStrategy {
   constructor(@inject(createLogger('ErrorHandler')) private logger: ILogger) {}
 
-  sendHttpError(response: Response, { statusCode, error }: HttpError): void {
+  sendHttpError(response: Response, { statusCode, error }: Payload): void {
     this.logger.logError(`StatusCode: ${statusCode}`, error);
     response.status(statusCode).send(this.serializeError(error));
   }
