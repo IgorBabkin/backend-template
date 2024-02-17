@@ -17,7 +17,7 @@ export interface IExpressErrorHandlerStrategy {
 }
 
 export class DomainErrorHandler implements IServerBuilderModule {
-  constructor(@inject(by(IExpressErrorHandlerStrategyKey)) private strategy: IExpressErrorHandlerStrategy) {
+  constructor(@inject(by.key(IExpressErrorHandlerStrategyKey)) private strategy: IExpressErrorHandlerStrategy) {
   }
 
   applyTo(builder: IServerBuilder): void {

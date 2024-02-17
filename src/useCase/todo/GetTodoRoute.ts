@@ -7,7 +7,7 @@ import { IRequestMediatorKey } from '../../lib/container/IRequestMediator';
 import { ok } from '../../lib/express/utils';
 
 export class GetTodoHTTPRoute implements GetTodoRoute {
-  constructor(@inject(by(IRequestMediatorKey)) private mediator: IMediator) {}
+  constructor(@inject(by.key(IRequestMediatorKey)) private mediator: IMediator) {}
 
   async handle({ params }: GetTodoPayload): Promise<Ok<GetTodoResponse>> {
     const response = await this.mediator.send(GetTodo, { id: params.id });

@@ -7,7 +7,7 @@ import { IRequestMediatorKey } from '../../lib/container/IRequestMediator';
 import { created } from '../../lib/express/utils';
 
 export class AddTodoHTTPRoute implements AddTodoRoute {
-  constructor(@inject(by(IRequestMediatorKey)) private mediator: IMediator) {}
+  constructor(@inject(by.key(IRequestMediatorKey)) private mediator: IMediator) {}
 
   async handle({ body }: AddTodoPayload): Promise<Created> {
     await this.mediator.send(AddTodo, { title: body.title, description: body.description });

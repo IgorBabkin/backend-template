@@ -24,3 +24,4 @@ export const perService = provider(singleton(), tags(Scope.Service));
 export const asSingleton = provider(singleton());
 
 export const scope = (l: Resolvable) => l;
+export const instances = (l: IContainer) => l.getInstances();

@@ -4,7 +4,9 @@ import { prismaClient } from '../../lib/prisma/PrismaTransactionContext';
 import { handlePrismaError } from '../../lib/prisma/handlePrismaError';
 import { ITodoRepo, ITodoRepoKey } from './ITodoRepo';
 import { inject, key } from 'ts-ioc-container';
+import { asSingleton } from '../../lib/container/di';
 
+@asSingleton
 @key(ITodoRepoKey)
 export class TodoRepo implements ITodoRepo {
   static toDomain(record: Todo): ITodo {
