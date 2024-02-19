@@ -6,7 +6,6 @@ import { Production } from './stages/Production';
 import { Development } from './stages/Development';
 import { Common } from './stages/Common';
 import { bodyParsing, handleNotFound } from './lib/express/modules/expressModules';
-import * as console from 'console';
 import { PAYLOADS } from './.generated/validators';
 import openapi from './.generated/swagger.json';
 import { OpenAPIV3 } from 'openapi-types';
