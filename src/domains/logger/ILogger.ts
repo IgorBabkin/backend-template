@@ -1,4 +1,4 @@
-import { Resolver } from '../../lib/container/di';
+import { IContainer } from 'ts-ioc-container';
 
 export interface ILogger {
   info(message: string, meta?: object): void;
@@ -16,7 +16,4 @@ export interface ILogger {
 
 export const ILoggerKey = Symbol('ILogger');
 
-export const createLogger =
-  (topic: string): Resolver<ILogger> =>
-  (c) =>
-    c.resolve(ILoggerKey, { topic });
+export const createLogger = (topic: string) => (c: IContainer) => c.resolve(ILoggerKey, { topic });

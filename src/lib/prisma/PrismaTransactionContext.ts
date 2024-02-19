@@ -1,7 +1,8 @@
 import { PrismaClient } from '@prisma/client';
-import { key, Resolvable } from 'ts-ioc-container';
+import { IContainer, key } from 'ts-ioc-container';
 import { ITransactionContext, ITransactionContextKey } from 'ts-request-mediator';
-import { onDispose, perApplication } from '../container/di';
+import { perApplication } from '../container/di';
+import { onDispose } from '../../useCase/DisposeInstances';
 
 @perApplication
 @key(ITransactionContextKey)
@@ -20,4 +21,4 @@ export class PrismaTransactionContext implements ITransactionContext {
   }
 }
 
-export const prismaClient = (l: Resolvable) => l.resolve<PrismaTransactionContext>(ITransactionContextKey).dbClient;
+export const prismaClient = (l: IContainer) => l.resolve<PrismaTransactionContext>(ITransactionContextKey).dbClient;

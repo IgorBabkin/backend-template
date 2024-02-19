@@ -1,6 +1,6 @@
 import { ExpressServerBuilder } from './lib/express/ExpressServerBuilder';
 import { Scope } from 'ts-request-mediator';
-import { createContainer, disposeContainer } from './lib/container/di';
+import { createContainer } from './lib/container/di';
 import { ProcessEnv } from './env/ProcessEnv';
 import { Production } from './stages/Production';
 import { Development } from './stages/Development';
@@ -15,6 +15,7 @@ import * as process from 'process';
 import { DomainErrorHandler } from './useCase/errorHandler/DomainErrorHandler';
 import { OpenAPIRoutes } from './lib/express/modules/OpenAPIRoutes';
 import { RequestLogger } from './lib/express/modules/RequestLogger';
+import { DisposeInstances } from './useCase/DisposeInstances';
 
 const env = ProcessEnv.fromEnv(process.env);
 
@@ -31,7 +32,9 @@ const server = new ExpressServerBuilder()
   .build();
 
 server.on('error', (error: Error) => {
-  disposeContainer(container)
+  container
+    .resolve(DisposeInstances)
+    .handle()
     .catch((e) => console.error('disposeContainer', e))
     .finally(() => container.dispose());
 

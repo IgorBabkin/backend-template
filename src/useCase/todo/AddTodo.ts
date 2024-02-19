@@ -1,11 +1,12 @@
 import { IQueryHandler, request } from 'ts-request-mediator';
 import { ITodoRepo, ITodoRepoKey } from '../../domains/todo/ITodoRepo';
 import { by, inject } from 'ts-ioc-container';
-import { PersistReposWithUnitOfWork } from './PersistReposWithUnitOfWork';
+import { PersistReposUnitOfWork } from '../PersistReposUnitOfWork';
+import { DisposeInstances } from '../DisposeInstances';
 
 type Query = { title: string; description: string };
 
-@request('after', [PersistReposWithUnitOfWork])
+@request('after', [PersistReposUnitOfWork, DisposeInstances])
 export class AddTodo implements IQueryHandler<Query, void> {
   constructor(@inject(by.key(ITodoRepoKey)) private todoRepo: ITodoRepo) {}
 
