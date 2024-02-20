@@ -13,7 +13,5 @@ export class TodoUnitOfWork extends UnitOfWork<Todo> {
     super();
   }
 
-  protected async saveInstance(instance: Todo): Promise<void> {
-    await this.todoRepo.save(instance);
-  }
+  protected async saveInstance(instance: Todo): Promise<void> {}
 }
