@@ -10,13 +10,12 @@ import { PAYLOADS } from './.generated/validators';
 import openapi from './.generated/swagger.json';
 import { OpenAPIV3 } from 'openapi-types';
 import { operations } from './operations';
-import * as process from 'process';
 import { DomainErrorHandler } from './useCase/errorHandler/DomainErrorHandler';
 import { OpenAPIRoutes } from './lib/express/modules/OpenAPIRoutes';
 import { RequestLogger } from './lib/express/modules/RequestLogger';
 import { DisposeInstances } from './useCase/DisposeInstances';
 
-const env = ProcessEnv.fromEnv(process.env);
+const env = ProcessEnv.parse(process.env);
 
 const container = createContainer(Scope.Application)
   .use(new Common())

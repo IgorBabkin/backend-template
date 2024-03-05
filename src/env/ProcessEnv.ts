@@ -8,7 +8,7 @@ const schema = z.object({
 });
 
 export class ProcessEnv implements IEnv {
-  static fromEnv(data: unknown): ProcessEnv {
+  static parse(data: unknown): ProcessEnv {
     const { LOG_LEVEL, PORT } = schema.parse(data);
     return new ProcessEnv(LOG_LEVEL, PORT);
   }
