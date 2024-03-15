@@ -46,8 +46,9 @@
     ]
   },
   "dependencies": {
-    "ts-ioc-container": "^26.4.4",
-    "ts-request-mediator": "^1.0.7",
+    "ts-ioc-container": "^27.4.4",
+    "ts-request-mediator": "^1.0.22",
+    "@ibabkin/utils": "^0.0.3",
     "@prisma/client": "^4.15.0",
     "axios": "^1.6.7",
     "body-parser": "~1.20.2",

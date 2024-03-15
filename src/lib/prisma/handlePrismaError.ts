@@ -4,9 +4,9 @@ import { EntityNotFoundError } from '../../domains/errors/EntityNotFoundError';
 import { PersistenceError } from '../../domains/errors/PersistenceError';
 import { UnknownError } from '../../domains/errors/UnknownError';
 import { Prisma } from '@prisma/client';
-import { asyncHandleError } from '../asyncHandleError';
+import { handleAsyncError } from '@ibabkin/utils';
 
-export const handlePrismaError = asyncHandleError((error: unknown) => {
+export const handlePrismaError = handleAsyncError((error: unknown) => {
   if (error instanceof Prisma.PrismaClientKnownRequestError) {
     switch (error.code) {
       case 'P2002':
