@@ -2,12 +2,16 @@ import { PrismaClient, Todo } from '@prisma/client';
 import { ITodo, ITodoValue } from './ITodo';
 import { prismaClient } from '../../lib/prisma/PrismaTransactionContext';
 import { handlePrismaError } from '../../lib/prisma/handlePrismaError';
-import { ITodoRepo, ITodoRepoKey } from './ITodoRepo';
-import { inject, key } from 'ts-ioc-container';
+import { inject, key, register } from 'ts-ioc-container';
 import { asSingleton } from '../../lib/container/di';
+import { IRepository } from '../../lib/em/IRepository';
+
+export interface ITodoRepo extends IRepository<ITodo, ITodoValue> {}
+
+export const ITodoRepoKey = Symbol('ITodoRepo');
 
 @asSingleton
-@key(ITodoRepoKey)
+@register(key(ITodoRepoKey))
 export class TodoRepo implements ITodoRepo {
   static toDomain(record: Todo): ITodo {
     return {
@@ -34,7 +38,29 @@ export class TodoRepo implements ITodoRepo {
 
   @handlePrismaError
   async create(value: ITodoValue): Promise<ITodo> {
-    const record = await this.dbClient.todo.create({ data: TodoRepo.toPersistence(value) });
+    const record = await this.dbClient.todo.create({
+      data: {
+        title: value.title,
+        description: value.description,
+      },
+    });
     return TodoRepo.toDomain(record);
+  }
+
+  @handlePrismaError
+  async delete(id: string): Promise<void> {
+    await this.dbClient.todo.delete({ where: { id: +id } });
+  }
+
+  @handlePrismaError
+  async update(entity: ITodo): Promise<ITodo> {
+    const updated = await this.dbClient.todo.update({
+      where: { id: +entity.id },
+      data: {
+        title: entity.title,
+        description: entity.description,
+      },
+    });
+    return TodoRepo.toDomain(updated);
   }
 }

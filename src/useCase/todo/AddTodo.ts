@@ -1,16 +1,31 @@
-import { IQueryHandler, request } from 'ts-request-mediator';
-import { ITodoRepo, ITodoRepoKey } from '../../domains/todo/ITodoRepo';
-import { by, inject } from 'ts-ioc-container';
-import { PersistReposUnitOfWork } from '../PersistReposUnitOfWork';
-import { DisposeInstances } from '../DisposeInstances';
+import { EntityManager } from '../../lib/em/EntityManager';
+import { ITodo, ITodoValue } from '../../domains/todo/ITodo';
+import { IQueryHandler } from '../../lib/mediator/IQueryHandler';
+import { provider, register, scope } from 'ts-ioc-container';
+import { operation } from '../../lib/container/UseCaseProvider';
+import { perScope } from '../../lib/mediator/Scope';
+import { accessor } from '../../lib/container/utils';
 
-type Query = { title: string; description: string };
+interface IUserQuery {
+  userId: string;
+}
 
-@request('after', [PersistReposUnitOfWork, DisposeInstances])
-export class AddTodo implements IQueryHandler<Query, void> {
-  constructor(@inject(by.key(ITodoRepoKey)) private todoRepo: ITodoRepo) {}
+interface Query extends IUserQuery {
+  title: string;
+  description: string;
+}
 
-  async handle(query: Query): Promise<void> {
-    await this.todoRepo.create({ title: query.title, description: query.description });
+export interface IAddTodo extends IQueryHandler<Query, () => ITodo> {}
+
+export const IAddTodoKey = accessor<IAddTodo>(Symbol('IAddTodo'));
+
+@provider(operation)
+@register(IAddTodoKey.register, scope(perScope.Request))
+export class AddTodo implements IAddTodo {
+  constructor(private em: EntityManager<ITodo, ITodoValue>) {}
+
+  async handle(query: Query): Promise<() => ITodo> {
+    const todo = this.em.create({ title: query.title, description: query.description });
+    return () => todo.getResult();
   }
 }

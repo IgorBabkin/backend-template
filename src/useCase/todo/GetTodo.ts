@@ -1,11 +1,20 @@
-import { IQueryHandler } from 'ts-request-mediator';
 import { GetTodoResponse } from '../../.generated/operations';
-import { ITodoRepo, ITodoRepoKey } from '../../domains/todo/ITodoRepo';
-import { by, inject } from 'ts-ioc-container';
+import { by, inject, provider, register, scope } from 'ts-ioc-container';
+import { ITodoRepo, ITodoRepoKey } from '../../domains/todo/TodoRepo';
+import { IQueryHandler } from '../../lib/mediator/IQueryHandler';
+import { accessor } from '../../lib/container/utils';
+import { perScope } from '../../lib/mediator/Scope';
+import { operation } from '../../lib/container/UseCaseProvider';
 
 type Query = { id: string };
 
-export class GetTodo implements IQueryHandler<Query, GetTodoResponse> {
+export interface IGetTodo extends IQueryHandler<Query, GetTodoResponse> {}
+
+export const IGetTodoKey = accessor<IGetTodo>(Symbol('IGetTodo'));
+
+@register(IGetTodoKey.register, scope(perScope.Request))
+@provider(operation)
+export class GetTodo implements IGetTodo {
   constructor(@inject(by.key(ITodoRepoKey)) private todoRepo: ITodoRepo) {}
 
   async handle(query: Query): Promise<GetTodoResponse> {

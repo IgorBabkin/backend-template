@@ -3,12 +3,16 @@ import { OpenAPIV3 } from 'openapi-types';
 import { HttpResponse, Route, RouteOptions } from '@ibabkin/openapi-to-server';
 import { Request, Response } from 'express';
 import { ZodType } from 'zod';
+import { IContainer, Provider } from 'ts-ioc-container';
+import { Scope } from '../../mediator/Scope';
+import { IRequestContext } from '../../container/RequestContext';
 
 export class OpenAPIRoutes implements IServerBuilderModule {
   constructor(
     private doc: OpenAPIV3.Document,
-    private operations: Record<string, Route<unknown, HttpResponse<unknown>>>,
+    private operations: Record<string, (scope: IContainer) => Route<unknown, HttpResponse>>,
     private validators: Record<string, ZodType>,
+    private appScope: IContainer,
   ) {}
 
   applyTo(builder: IServerBuilder): void {
@@ -20,35 +24,37 @@ export class OpenAPIRoutes implements IServerBuilderModule {
         throw new Error(`No route found for path ${path}`);
       }
 
-      const options = { tags: route.tags ?? [] };
       const operationId = route.operationId!;
+      const operation = this.getOperation(operationId);
+      const payloadValidator = this.getValidator(operationId);
+      const options = { tags: route.tags ?? [] };
 
       if (p?.get) {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         builder.addExpressModule((server) => {
           server.get(url, (req, res, next) =>
-            this.handleRequest(operationId, { req, res }, options).catch((e) => next(e)),
+            this.handleRequest(operation, payloadValidator, options, { req, res }).catch((e) => next(e)),
           );
         });
       }
       if (p?.post) {
         builder.addExpressModule((server) => {
           server.post(url, (req, res, next) =>
-            this.handleRequest(operationId, { req, res }, options).catch((e) => next(e)),
+            this.handleRequest(operation, payloadValidator, options, { req, res }).catch((e) => next(e)),
           );
         });
       }
       if (p?.put) {
         builder.addExpressModule((server) => {
           server.put(url, (req, res, next) =>
-            this.handleRequest(operationId, { req, res }, options).catch((e) => next(e)),
+            this.handleRequest(operation, payloadValidator, options, { req, res }).catch((e) => next(e)),
           );
         });
       }
       if (p?.delete) {
         builder.addExpressModule((server) => {
           server.delete(url, (req, res, next) =>
-            this.handleRequest(operationId, { req, res }, options).catch((e) => next(e)),
+            this.handleRequest(operation, payloadValidator, options, { req, res }).catch((e) => next(e)),
           );
         });
       }
@@ -56,31 +62,34 @@ export class OpenAPIRoutes implements IServerBuilderModule {
   }
 
   private async handleRequest(
-    operationId: string,
-    { req, res }: { req: Request; res: Response },
+    operation: (scope: IContainer) => Route<unknown, HttpResponse>,
+    validator: ZodType,
     options: RouteOptions,
+    { req, res }: { req: Request; res: Response },
   ) {
-    const { status, payload } = await this.handleOperation(
-      operationId,
-      this.validatePayload(operationId, req),
-      options,
-    );
-    return res.status(status).header('ContentType', 'application/json').send(payload);
-  }
-
-  private handleOperation(operationId: string, data: unknown, options: RouteOptions) {
-    const operation = this.operations[operationId];
-    if (!operation) {
-      throw new Error(`Operation ${operationId} not found`);
+    const requestScope = this.appScope.createScope(Scope.Request);
+    requestScope.register(IRequestContext.key, Provider.fromValue<IRequestContext>(options));
+    try {
+      const { status, payload } = await operation(requestScope).handle(validator.parse(req), options);
+      return res.status(status).header('ContentType', 'application/json').send(payload);
+    } finally {
+      requestScope.dispose();
     }
-    return operation.handle(data, options);
   }
 
-  private validatePayload(operationId: string, data: unknown) {
+  private getValidator(operationId: string) {
     const validator = this.validators[operationId];
     if (!validator) {
       throw new Error(`Validator ${operationId} not found`);
     }
-    return validator.parse(data);
+    return validator;
+  }
+
+  private getOperation(operationId: string) {
+    const operation = this.operations[operationId];
+    if (!operation) {
+      throw new Error(`Operation ${operationId} not found`);
+    }
+    return operation;
   }
 }

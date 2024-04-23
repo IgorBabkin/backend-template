@@ -1,11 +1,13 @@
 import { PrismaClient } from '@prisma/client';
-import { IContainer, key } from 'ts-ioc-container';
-import { ITransactionContext, ITransactionContextKey } from 'ts-request-mediator';
-import { perApplication } from '../container/di';
+import { IContainer, key, provider, register, scope, singleton } from 'ts-ioc-container';
+import { asSingleton } from '../container/di';
+import { ITransactionContext, ITransactionContextKey } from '../mediator/transaction/ITransactionContext';
+import { Scope } from '../mediator/Scope';
 import { onDispose } from '../../useCase/DisposeInstances';
 
-@perApplication
-@key(ITransactionContextKey)
+@asSingleton
+@register(key(ITransactionContextKey), scope((c) => c.hasTag(Scope.Application)))
+@provider(singleton())
 export class PrismaTransactionContext implements ITransactionContext {
   constructor(public dbClient: PrismaClient = new PrismaClient()) {}
 

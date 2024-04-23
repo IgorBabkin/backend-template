@@ -1,5 +1,4 @@
 import { ExpressServerBuilder } from './lib/express/ExpressServerBuilder';
-import { Scope } from 'ts-request-mediator';
 import { createContainer } from './lib/container/di';
 import { ProcessEnv } from './env/ProcessEnv';
 import { Production } from './stages/Production';
@@ -14,27 +13,28 @@ import { DomainErrorHandler } from './useCase/errorHandler/DomainErrorHandler';
 import { OpenAPIRoutes } from './lib/express/modules/OpenAPIRoutes';
 import { RequestLogger } from './lib/express/modules/RequestLogger';
 import { DisposeInstances } from './useCase/DisposeInstances';
+import { Scope } from './lib/mediator/Scope';
 
 const env = ProcessEnv.parse(process.env);
 
-const container = createContainer(Scope.Application)
+const appScope = createContainer(Scope.Application)
   .use(new Common())
   .use(process.env.NODE_ENV === 'production' ? new Production(env) : new Development(env));
 
 const server = new ExpressServerBuilder()
-  .useModule(new OpenAPIRoutes(openapi as OpenAPIV3.Document, operations(container), PAYLOADS))
-  .useModule(container.resolve(DomainErrorHandler))
-  .useModule(container.resolve(RequestLogger))
+  .useModule(new OpenAPIRoutes(openapi as OpenAPIV3.Document, operations, PAYLOADS, appScope))
+  .useModule(appScope.resolve(DomainErrorHandler))
+  .useModule(appScope.resolve(RequestLogger))
   .addExpressModule(bodyParsing)
   .addExpressModule(handleNotFound)
   .build();
 
 server.on('error', (error: Error) => {
-  container
+  appScope
     .resolve(DisposeInstances)
     .handle()
     .catch((e) => console.error('disposeContainer', e))
-    .finally(() => container.dispose());
+    .finally(() => appScope.dispose());
 
   if (error.name !== 'listen') {
     throw error;

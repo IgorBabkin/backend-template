@@ -1,13 +1,14 @@
 import { UnitOfWork } from './UnitOfWork';
-import { by, inject, key } from 'ts-ioc-container';
-import { ITodoRepo, ITodoRepoKey } from '../../domains/todo/ITodoRepo';
+import { by, inject, key, register, scope } from 'ts-ioc-container';
 import { Todo } from './Todo';
-import { perRequest } from '../../lib/container/di';
+import { asSingleton } from '../../lib/container/di';
+import { ITodoRepo, ITodoRepoKey } from '../../domains/todo/TodoRepo';
+import { Scope } from 'ts-request-mediator';
 
 export const ITodoUnitOfWorkKey = Symbol('ITodoUnitOfWork');
 
-@perRequest
-@key(ITodoUnitOfWorkKey)
+@asSingleton
+@register(key(ITodoUnitOfWorkKey), scope((c) => c.hasTag(Scope.Request)))
 export class TodoUnitOfWork extends UnitOfWork<Todo> {
   constructor(@inject(by.key(ITodoRepoKey)) private todoRepo: ITodoRepo) {
     super();

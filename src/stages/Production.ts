@@ -19,8 +19,8 @@ export class Production implements IContainerModule {
 
   applyTo(container: IContainer): void {
     container
-      .use(R.fromClass(PrismaTransactionContext).pipe(args(this.prismaClient)))
-      .use(R.fromClass(WinstonLogger).pipe(args(this.logger)))
-      .use(R.fromClass(ProdErrorHandleStrategy));
+      .add(R.fromClass(PrismaTransactionContext).pipe(args(this.prismaClient)))
+      .add(R.fromClass(WinstonLogger).pipe(args(this.logger)))
+      .add(R.fromClass(ProdErrorHandleStrategy));
   }
 }
