@@ -13,7 +13,7 @@ export class Development implements IContainerModule {
     transports: [new transports.Console()],
   });
 
-  private prismaClient = new PrismaClient({ log: ['info'] });
+  private prismaClient = new PrismaClient({ log: ['query'] });
 
   constructor(private env: IEnv) {}
 

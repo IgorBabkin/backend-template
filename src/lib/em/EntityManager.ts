@@ -12,7 +12,7 @@ import {
   scope,
   singleton,
 } from 'ts-ioc-container';
-import { Scope } from '../mediator/Scope';
+import { perScope } from '../mediator/Scope';
 
 export const IEntityKey = Symbol('IEntity');
 
@@ -20,7 +20,7 @@ const injectRepo = argsFn((s, ...args) => [s.resolve(args[0] as DependencyKey)])
 const singletonByRepo = singleton(() => new MultiCache((...args) => args[0] as DependencyKey));
 export const entityManager = (repoKey: DependencyKey) => (s: IContainer) => s.resolve(IEntityKey, { args: [repoKey] });
 
-@register(key(IEntityKey), scope((s) => s.hasTag(Scope.Request)))
+@register(key(IEntityKey), scope(perScope.Request))
 @provider(injectRepo, singletonByRepo)
 export class EntityManager<E extends IEntity = IEntity, V = unknown> {
   private entityStore: EntityStore<E, V> = new EntityStore();

@@ -1,33 +1,42 @@
-import { entityManager, EntityManager, IEntityKey } from '../../lib/em/EntityManager';
+import { entityManager, EntityManager } from '../../lib/em/EntityManager';
 import { ITodo, ITodoValue } from '../../domains/todo/ITodo';
 import { Entity, ID } from '../../lib/em/IEntity';
 import { alias, inject, provider, register, scope } from 'ts-ioc-container';
 import { ITodoRepoKey } from '../../domains/todo/TodoRepo';
-import { IMiddleware } from '../../lib/mediator/IQueryHandler';
-import { undefined } from 'zod';
-import { Scope } from '../../lib/mediator/Scope';
+import { perScope } from '../../lib/mediator/Scope';
 import { middleware } from '../../lib/container/Middleware';
+import { FillQuery } from './FillQuery';
 
 export interface ITodoQuery {
   todoID: ID;
 }
 
-export type WithTodo<Payload extends ITodoQuery> = Payload & {
-  todo: Entity<ITodo>;
-};
+interface UserQuery {
+  userId: string;
+}
 
-const isTodoQuery = (payload: unknown): payload is ITodoQuery => {
-  return (payload as any).todoID !== undefined;
-};
+interface User {
+  id: string;
+  firstname: string;
+}
 
-@register(scope((s) => s.hasTag(Scope.Request)))
+type WithTodo<T> = T extends ITodoQuery ? T & { todo: Entity<ITodo> } : T;
+type WithUser<T> = T extends UserQuery ? T & { user: Entity<User> } : T;
+
+export type AppQuery<T> = WithUser<WithTodo<T>>;
+
+@register(scope(perScope.Request))
 @provider(middleware, alias('middleware', 'before', 'common'))
-export class FindTodo implements IMiddleware {
-  constructor(@inject(entityManager(ITodoRepoKey)) private em: EntityManager<ITodo, ITodoValue>) {}
+export class FindTodo extends FillQuery<ITodoQuery> {
+  constructor(@inject(entityManager(ITodoRepoKey)) private em: EntityManager<ITodo, ITodoValue>) {
+    super();
+  }
 
-  async handle(payload: unknown): Promise<void> {
-    if (isTodoQuery(payload)) {
-      (payload as WithTodo<ITodoQuery>).todo = await this.em.findByIdOrFail(payload.todoID);
-    }
+  protected async execute(query: ITodoQuery): Promise<void> {
+    (query as WithTodo<ITodoQuery>).todo = await this.em.findByIdOrFail(query.todoID);
+  }
+
+  protected matchQuery(query: unknown): query is ITodoQuery {
+    return 'todoID' in (query as any);
   }
 }

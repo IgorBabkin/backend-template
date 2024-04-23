@@ -2,16 +2,16 @@ import { PrismaClient, Todo } from '@prisma/client';
 import { ITodo, ITodoValue } from './ITodo';
 import { prismaClient } from '../../lib/prisma/PrismaTransactionContext';
 import { handlePrismaError } from '../../lib/prisma/handlePrismaError';
-import { inject, key, register } from 'ts-ioc-container';
-import { asSingleton } from '../../lib/container/di';
+import { inject, key, provider, register, scope, singleton } from 'ts-ioc-container';
 import { IRepository } from '../../lib/em/IRepository';
+import { perScope } from '../../lib/mediator/Scope';
 
 export interface ITodoRepo extends IRepository<ITodo, ITodoValue> {}
 
 export const ITodoRepoKey = Symbol('ITodoRepo');
 
-@asSingleton
-@register(key(ITodoRepoKey))
+@register(key(ITodoRepoKey), scope(perScope.Request))
+@provider(singleton())
 export class TodoRepo implements ITodoRepo {
   static toDomain(record: Todo): ITodo {
     return {
@@ -21,24 +21,17 @@ export class TodoRepo implements ITodoRepo {
     };
   }
 
-  static toPersistence(value: ITodoValue) {
-    return {
-      title: value.title,
-      description: value.description,
-    };
-  }
-
-  constructor(@inject(prismaClient) private dbClient: PrismaClient) {}
+  constructor(@inject(prismaClient) private dbClient: () => PrismaClient) {}
 
   @handlePrismaError
   async findByIdOrFail(id: string): Promise<ITodo> {
-    const record = await this.dbClient.todo.findUniqueOrThrow({ where: { id: +id } });
+    const record = await this.dbClient().todo.findUniqueOrThrow({ where: { id: +id } });
     return TodoRepo.toDomain(record);
   }
 
   @handlePrismaError
   async create(value: ITodoValue): Promise<ITodo> {
-    const record = await this.dbClient.todo.create({
+    const record = await this.dbClient().todo.create({
       data: {
         title: value.title,
         description: value.description,
@@ -49,12 +42,12 @@ export class TodoRepo implements ITodoRepo {
 
   @handlePrismaError
   async delete(id: string): Promise<void> {
-    await this.dbClient.todo.delete({ where: { id: +id } });
+    await this.dbClient().todo.delete({ where: { id: +id } });
   }
 
   @handlePrismaError
   async update(entity: ITodo): Promise<ITodo> {
-    const updated = await this.dbClient.todo.update({
+    const updated = await this.dbClient().todo.update({
       where: { id: +entity.id },
       data: {
         title: entity.title,

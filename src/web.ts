@@ -22,10 +22,10 @@ const appScope = createContainer(Scope.Application)
   .use(process.env.NODE_ENV === 'production' ? new Production(env) : new Development(env));
 
 const server = new ExpressServerBuilder()
+  .addExpressModule(bodyParsing)
   .useModule(new OpenAPIRoutes(openapi as OpenAPIV3.Document, operations, PAYLOADS, appScope))
   .useModule(appScope.resolve(DomainErrorHandler))
   .useModule(appScope.resolve(RequestLogger))
-  .addExpressModule(bodyParsing)
   .addExpressModule(handleNotFound)
   .build();
 

@@ -2,12 +2,11 @@ import { createLogger, ILogger } from '../../domains/logger/ILogger';
 import { Response } from 'express';
 import { DomainError } from '../../domains/errors/DomainError';
 import { IExpressErrorHandlerStrategy, IExpressErrorHandlerStrategyKey, Payload } from './DomainErrorHandler';
-import { asSingleton } from '../../lib/container/di';
-import { inject, key, register, scope } from 'ts-ioc-container';
-import { Scope } from 'ts-request-mediator';
+import { inject, key, provider, register, scope, singleton } from 'ts-ioc-container';
+import { perScope } from '../../lib/mediator/Scope';
 
-@asSingleton
-@register(key(IExpressErrorHandlerStrategyKey), scope((c) => c.hasTag(Scope.Application)))
+@register(key(IExpressErrorHandlerStrategyKey), scope(perScope.Application))
+@provider(singleton())
 export class DevErrorHandleStrategy implements IExpressErrorHandlerStrategy {
   constructor(@inject(createLogger('DomainErrorHandler')) private logger: ILogger) {}
 

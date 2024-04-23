@@ -1,19 +1,12 @@
-import { by, constructor, IContainer, inject, IProvider, ProviderDecorator } from 'ts-ioc-container';
+import { by, constructor, IContainer, inject, InjectionToken } from 'ts-ioc-container';
 import { TransactionMediator } from '../mediator/transaction/TransactionMediator';
 import { SimpleMediator } from '../mediator/SimpleMediator';
 import { IMediator } from '../mediator/IMediator';
 import { getProp, prop } from '../metadata';
 import { IMiddleware, IQueryHandler } from '../mediator/IQueryHandler';
-import { undefined } from 'zod';
 import { Middleware } from './Middleware';
 import { requestContext } from './RequestContext';
 import { byAliases } from './di';
-import { MapFn } from 'ts-ioc-container/typings/utils';
-
-export interface IHook {
-  before: constructor<IMiddleware>[];
-  after: constructor<IMiddleware>[];
-}
 
 export class Operation<TQuery, TResponse> implements IQueryHandler<TQuery, TResponse> {
   private mediator: IMediator;
@@ -36,14 +29,14 @@ export class Operation<TQuery, TResponse> implements IQueryHandler<TQuery, TResp
 
     const beforeHooks = this.beforeMiddleware.concat(this.beforeTaggedMiddleware).concat(this.getBeforeHooks(handler));
     for (const middleware of beforeHooks) {
-      await middleware.handle(query, handler, undefined);
+      await this.mediator.send(middleware, { query, resource: handler, result: undefined });
     }
 
     const result = await this.mediator.send(handler, query);
 
     const afterHooks = this.afterMiddleware.concat(this.afterTaggedMiddleware).concat(this.getAfterHooks(handler));
     for (const middleware of afterHooks) {
-      await middleware.handle(query, handler, result);
+      await this.mediator.send(middleware, { query, resource: handler, result });
     }
 
     return result;
@@ -52,7 +45,9 @@ export class Operation<TQuery, TResponse> implements IQueryHandler<TQuery, TResp
   private getAfterHooks<TQuery, TResponse>(UseCase: IQueryHandler<TQuery, TResponse>): IMiddleware[] {
     const items =
       getProp<constructor<IMiddleware>[]>(UseCase, createHookMetadataKey('RequestMediator/', 'after')) ?? [];
-    return items.map((item) => new Middleware(() => this.requestScope.resolve(item)));
+    return items.map((item) =>
+      this.requestScope.resolve(Middleware, { args: [() => this.requestScope.resolve(item)] }),
+    );
   }
 
   private getBeforeHooks<TQuery, TResponse>(UseCase: IQueryHandler<TQuery, TResponse>): IMiddleware[] {
@@ -62,20 +57,13 @@ export class Operation<TQuery, TResponse> implements IQueryHandler<TQuery, TResp
   }
 }
 
-const createHookMetadataKey = <K extends keyof IHook>(prefix: string, key: K) => `${prefix}${key}`;
+const createHookMetadataKey = (prefix: string, key: 'before' | 'after') => `${prefix}${key}`;
 
-export function request<K extends keyof IHook>(key: K, value: IHook[K]) {
+export function request(key: 'before' | 'after', value: constructor<IMiddleware>[]) {
   return prop(createHookMetadataKey('RequestMediator/', key), value);
 }
 
-export const operation: MapFn<IProvider> = (provider) => new OperationProvider(provider as IProvider<IQueryHandler>);
-
-class OperationProvider extends ProviderDecorator<IQueryHandler> {
-  constructor(private provider: IProvider<IQueryHandler>) {
-    super(provider);
-  }
-
-  resolve(requestScope: IContainer, ...args: unknown[]): IQueryHandler {
-    return requestScope.resolve(Operation, { args: [() => this.provider.resolve(requestScope, ...args)] });
-  }
-}
+export const useOperation =
+  <T extends IQueryHandler>(Target: InjectionToken<T>) =>
+  (requestScope: IContainer) =>
+    requestScope.resolve(Operation, { args: [() => requestScope.resolve(Target)] });

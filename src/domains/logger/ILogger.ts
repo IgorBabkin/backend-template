@@ -16,4 +16,4 @@ export interface ILogger {
 
 export const ILoggerKey = Symbol('ILogger');
 
-export const createLogger = (topic: string) => (c: IContainer) => c.resolve(ILoggerKey, { topic });
+export const createLogger = (topic: string) => (c: IContainer) => c.resolve(ILoggerKey, { args: [{ topic }] });

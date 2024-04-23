@@ -1,14 +1,13 @@
-import { Container, IContainer, MetadataInjector, provider, singleton, Tag } from 'ts-ioc-container';
+import { Container, IContainer, MetadataInjector, Tag } from 'ts-ioc-container';
 import { byAliasesMemoized } from './Memo';
+import { AliasPredicate } from 'ts-ioc-container/typings/container/IContainer';
 
 export const createContainer = (...tags: Tag[]) => new Container(new MetadataInjector(), { tags });
 
-export const asSingleton = provider(singleton());
-
 const tagged =
-  (...tags: string[]) =>
-  (p: Set<string>) =>
-    tags.every(p.has);
+  (...tags: string[]): AliasPredicate =>
+  (p) =>
+    tags.every((t) => p.has(t));
 
 export const byAliases =
   (prefixAliases: string[], getContextAliases?: (s: IContainer) => string[]) => (s: IContainer) => {
