@@ -23,14 +23,14 @@ export class Operation<TQuery, TResponse> implements IQueryHandler<TQuery, TResp
 
     const beforeHooks = this.beforeMiddleware.concat(this.getBeforeHooks(handler));
     for (const middleware of beforeHooks) {
-      await this.mediator.send(middleware, { query, resource: handler, result: undefined });
+      await middleware.handle({ query, resource: handler, result: undefined });
     }
 
     const result = await this.mediator.send(handler, query);
 
     const afterHooks = this.afterMiddleware.concat(this.getAfterHooks(handler));
     for (const middleware of afterHooks) {
-      await this.mediator.send(middleware, { query, resource: handler, result });
+      await middleware.handle({ query, resource: handler, result });
     }
 
     return result;
@@ -53,7 +53,9 @@ export class Operation<TQuery, TResponse> implements IQueryHandler<TQuery, TResp
         UseCase.constructor as constructor<unknown>,
         createHookMetadataKey('RequestMediator/', 'before'),
       ) ?? [];
-    return items.map((item) => new Middleware(() => this.requestScope.resolve(item)));
+    return items.map((item) =>
+      this.requestScope.resolve(Middleware, { args: [() => this.requestScope.resolve(item)] }),
+    );
   }
 }
 
