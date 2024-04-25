@@ -1,10 +1,10 @@
 import { PrismaClient, Todo } from '@prisma/client';
 import { ITodo, ITodoValue } from './ITodo';
 import { prismaClient } from '../../lib/prisma/PrismaTransactionContext';
-import { handlePrismaError } from '../../lib/prisma/handlePrismaError';
 import { inject, key, provider, register, scope, singleton } from 'ts-ioc-container';
 import { IRepository } from '../../lib/em/IRepository';
 import { perScope } from '../../lib/mediator/Scope';
+import { repository } from '../../lib/prisma/RepositoryProvider';
 
 export interface ITodoRepo extends IRepository<ITodo, ITodoValue> {
   findAll(): Promise<ITodo[]>;
@@ -13,7 +13,7 @@ export interface ITodoRepo extends IRepository<ITodo, ITodoValue> {
 export const ITodoRepoKey = Symbol('ITodoRepo');
 
 @register(key(ITodoRepoKey), scope(perScope.Request))
-@provider(singleton())
+@provider(repository, singleton())
 export class TodoRepo implements ITodoRepo {
   static toDomain(record: Todo): ITodo {
     return {
@@ -25,13 +25,11 @@ export class TodoRepo implements ITodoRepo {
 
   constructor(@inject(prismaClient) private dbClient: () => PrismaClient) {}
 
-  @handlePrismaError
   async findByIdOrFail(id: string): Promise<ITodo> {
     const record = await this.dbClient().todo.findUniqueOrThrow({ where: { id: +id } });
     return TodoRepo.toDomain(record);
   }
 
-  @handlePrismaError
   async create(value: ITodoValue): Promise<ITodo> {
     const record = await this.dbClient().todo.create({
       data: {
@@ -42,12 +40,10 @@ export class TodoRepo implements ITodoRepo {
     return TodoRepo.toDomain(record);
   }
 
-  @handlePrismaError
   async delete(id: string): Promise<void> {
     await this.dbClient().todo.delete({ where: { id: +id } });
   }
 
-  @handlePrismaError
   async update(entity: ITodo): Promise<ITodo> {
     const updated = await this.dbClient().todo.update({
       where: { id: +entity.id },
@@ -59,7 +55,6 @@ export class TodoRepo implements ITodoRepo {
     return TodoRepo.toDomain(updated);
   }
 
-  @handlePrismaError
   async findAll(): Promise<ITodo[]> {
     const records = await this.dbClient().todo.findMany();
     return records.map(TodoRepo.toDomain);
