@@ -6,7 +6,7 @@ export interface IEntity {
   id: ID;
 }
 
-export class Entity<State extends IEntity> {
+export class Entity<State extends IEntity = IEntity> {
   isDeleted = false;
   private hasChanged = false;
   private changes: Partial<State> = {};
@@ -21,7 +21,7 @@ export class Entity<State extends IEntity> {
     return { ...this.value, ...this.changes };
   }
 
-  async persist(repo: IRepository<State>): Promise<void> {
+  async persist(repo: IRepository<State, unknown>): Promise<void> {
     if (this.isDeleted) {
       await repo.delete(this.value.id);
       return;
@@ -32,7 +32,7 @@ export class Entity<State extends IEntity> {
     }
   }
 
-  update(state: Partial<State>): void {
+  map(state: (state: State) => Partial<State>): void {
     this.hasChanged = true;
     this.changes = { ...this.changes, ...state };
   }
@@ -45,6 +45,8 @@ export class Entity<State extends IEntity> {
 export class Value<State, E extends IEntity> {
   entity?: Entity<E>;
 
+  constructor(private value: State) {}
+
   getEntity() {
     if (this.entity === undefined) {
       throw new Error('Entity not persisted');
@@ -56,9 +58,8 @@ export class Value<State, E extends IEntity> {
     return this.getEntity().getState();
   }
 
-  async persist(repo: IRepository<E, State>) {
+  async persist(repo: IRepository<E, State>): Promise<Entity<E>> {
     this.entity = new Entity(await repo.create(this.value));
+    return this.entity;
   }
-
-  constructor(private value: State) {}
 }

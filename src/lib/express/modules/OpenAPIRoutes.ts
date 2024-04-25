@@ -18,47 +18,68 @@ export class OpenAPIRoutes implements IServerBuilderModule {
   applyTo(builder: IServerBuilder): void {
     for (const [path, p] of Object.entries(this.doc.paths)) {
       const url = path.replace(/{/g, ':').replace(/}/g, '');
-      const route = p?.get ?? p?.post ?? p?.put ?? p?.delete;
-
-      if (!route) {
-        throw new Error(`No route found for path ${path}`);
-      }
-
-      const operationId = route.operationId!;
-      const operation = this.getOperation(operationId);
-      const payloadValidator = this.getValidator(operationId);
-      const options = { tags: route.tags ?? [] };
 
       if (p?.get) {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        builder.addExpressModule((server) => {
-          server.get(url, (req, res, next) =>
-            this.handleRequest(operation, payloadValidator, options, { req, res }).catch((e) => next(e)),
-          );
-        });
+        this.addGET(builder, url, p?.get);
       }
       if (p?.post) {
-        builder.addExpressModule((server) => {
-          server.post(url, (req, res, next) =>
-            this.handleRequest(operation, payloadValidator, options, { req, res }).catch((e) => next(e)),
-          );
-        });
+        this.addPOST(builder, url, p?.post);
       }
       if (p?.put) {
-        builder.addExpressModule((server) => {
-          server.put(url, (req, res, next) =>
-            this.handleRequest(operation, payloadValidator, options, { req, res }).catch((e) => next(e)),
-          );
-        });
+        this.addPUT(builder, url, p?.put);
       }
       if (p?.delete) {
-        builder.addExpressModule((server) => {
-          server.delete(url, (req, res, next) =>
-            this.handleRequest(operation, payloadValidator, options, { req, res }).catch((e) => next(e)),
-          );
-        });
+        this.addDELETE(builder, url, p?.delete);
       }
     }
+  }
+
+  private addGET(builder: IServerBuilder, url: string, route: OpenAPIV3.OperationObject) {
+    const { operation, payloadValidator, options } = this.parseRoute(route);
+
+    builder.addExpressModule((server) => {
+      server.get(url, (req, res, next) =>
+        this.handleRequest(operation, payloadValidator, options, { req, res }).catch((e) => next(e)),
+      );
+    });
+  }
+
+  private addPOST(builder: IServerBuilder, url: string, route: OpenAPIV3.OperationObject) {
+    const { operation, payloadValidator, options } = this.parseRoute(route);
+
+    builder.addExpressModule((server) => {
+      server.post(url, (req, res, next) =>
+        this.handleRequest(operation, payloadValidator, options, { req, res }).catch((e) => next(e)),
+      );
+    });
+  }
+
+  private addPUT(builder: IServerBuilder, url: string, route: OpenAPIV3.OperationObject) {
+    const { operation, payloadValidator, options } = this.parseRoute(route);
+
+    builder.addExpressModule((server) => {
+      server.put(url, (req, res, next) =>
+        this.handleRequest(operation, payloadValidator, options, { req, res }).catch((e) => next(e)),
+      );
+    });
+  }
+
+  private addDELETE(builder: IServerBuilder, url: string, route: OpenAPIV3.OperationObject) {
+    const { operation, payloadValidator, options } = this.parseRoute(route);
+
+    builder.addExpressModule((server) => {
+      server.delete(url, (req, res, next) =>
+        this.handleRequest(operation, payloadValidator, options, { req, res }).catch((e) => next(e)),
+      );
+    });
+  }
+
+  private parseRoute(route: OpenAPIV3.OperationObject) {
+    const operationId = route.operationId!;
+    const operation = this.getOperation(operationId);
+    const payloadValidator = this.getValidator(operationId);
+    const options = { tags: route.tags ?? [] };
+    return { operation, payloadValidator, options };
   }
 
   private async handleRequest(

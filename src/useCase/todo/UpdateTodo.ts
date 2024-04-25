@@ -11,7 +11,7 @@ export interface IUpdateTodo extends IQueryHandler<Query, () => ITodo> {}
 
 export class UpdateTodo implements IUpdateTodo {
   async handle({ todo, title, description }: AppQuery<Query>): Promise<() => ITodo> {
-    todo.update({ title, description });
+    todo.map(() => ({ title, description }));
     return () => todo.getState();
   }
 }

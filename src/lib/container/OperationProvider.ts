@@ -3,22 +3,16 @@ import { TransactionMediator } from '../mediator/transaction/TransactionMediator
 import { SimpleMediator } from '../mediator/SimpleMediator';
 import { IMediator } from '../mediator/IMediator';
 import { getProp, prop } from '../metadata';
-import { IMiddleware, IQueryHandler } from '../mediator/IQueryHandler';
+import { IMiddleware, IQueryHandler, useMiddleware } from '../mediator/IQueryHandler';
 import { Middleware } from './Middleware';
-import { requestContext } from './RequestContext';
-import { byAliases } from './di';
 
 export class Operation<TQuery, TResponse> implements IQueryHandler<TQuery, TResponse> {
   private mediator: IMediator;
 
   constructor(
     private fn: () => IQueryHandler<TQuery, TResponse>,
-    @inject(byAliases(['middleware', 'before', 'common'])) private beforeMiddleware: IMiddleware[],
-    @inject(byAliases(['middleware', 'after', 'common'])) private afterMiddleware: IMiddleware[],
-    @inject(byAliases(['middleware', 'before'], requestContext('tags')))
-    private beforeTaggedMiddleware: IMiddleware[],
-    @inject(byAliases(['middleware', 'after'], requestContext('tags')))
-    private afterTaggedMiddleware: IMiddleware[],
+    @inject(useMiddleware(['middleware-before'], ['common'])) private beforeMiddleware: IMiddleware[],
+    @inject(useMiddleware(['middleware-after'], ['common'])) private afterMiddleware: IMiddleware[],
     @inject(by.scope.current) private requestScope: IContainer,
   ) {
     this.mediator = new TransactionMediator(new SimpleMediator(), requestScope);
@@ -27,14 +21,14 @@ export class Operation<TQuery, TResponse> implements IQueryHandler<TQuery, TResp
   async handle(query: TQuery): Promise<TResponse> {
     const handler = this.fn();
 
-    const beforeHooks = this.beforeMiddleware.concat(this.beforeTaggedMiddleware).concat(this.getBeforeHooks(handler));
+    const beforeHooks = this.beforeMiddleware.concat(this.getBeforeHooks(handler));
     for (const middleware of beforeHooks) {
       await this.mediator.send(middleware, { query, resource: handler, result: undefined });
     }
 
     const result = await this.mediator.send(handler, query);
 
-    const afterHooks = this.afterMiddleware.concat(this.afterTaggedMiddleware).concat(this.getAfterHooks(handler));
+    const afterHooks = this.afterMiddleware.concat(this.getAfterHooks(handler));
     for (const middleware of afterHooks) {
       await this.mediator.send(middleware, { query, resource: handler, result });
     }
@@ -44,7 +38,10 @@ export class Operation<TQuery, TResponse> implements IQueryHandler<TQuery, TResp
 
   private getAfterHooks<TQuery, TResponse>(UseCase: IQueryHandler<TQuery, TResponse>): IMiddleware[] {
     const items =
-      getProp<constructor<IMiddleware>[]>(UseCase, createHookMetadataKey('RequestMediator/', 'after')) ?? [];
+      getProp<constructor<IMiddleware>[]>(
+        UseCase.constructor as constructor<unknown>,
+        createHookMetadataKey('RequestMediator/', 'after'),
+      ) ?? [];
     return items.map((item) =>
       this.requestScope.resolve(Middleware, { args: [() => this.requestScope.resolve(item)] }),
     );
@@ -52,7 +49,10 @@ export class Operation<TQuery, TResponse> implements IQueryHandler<TQuery, TResp
 
   private getBeforeHooks<TQuery, TResponse>(UseCase: IQueryHandler<TQuery, TResponse>): IMiddleware[] {
     const items =
-      getProp<constructor<IMiddleware>[]>(UseCase, createHookMetadataKey('RequestMediator/', 'before')) ?? [];
+      getProp<constructor<IMiddleware>[]>(
+        UseCase.constructor as constructor<unknown>,
+        createHookMetadataKey('RequestMediator/', 'before'),
+      ) ?? [];
     return items.map((item) => new Middleware(() => this.requestScope.resolve(item)));
   }
 }

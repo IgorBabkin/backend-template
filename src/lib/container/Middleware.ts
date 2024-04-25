@@ -1,4 +1,4 @@
-import { IContainer, IProvider, ProviderDecorator } from 'ts-ioc-container';
+import { alias, IContainer, IProvider, provider, ProviderDecorator } from 'ts-ioc-container';
 import { IMiddleware, MiddlewarePayload } from '../mediator/IQueryHandler';
 
 export class Middleware implements IMiddleware {
@@ -10,7 +10,9 @@ export class Middleware implements IMiddleware {
   }
 }
 
-export const middleware = (provider: IProvider) => new MiddlewareProvider(provider as IProvider<IMiddleware>);
+const middleware = (provider: IProvider) => new MiddlewareProvider(provider as IProvider<IMiddleware>);
+
+export const asMiddleware = (...aliases: string[]) => provider(middleware, alias(...aliases));
 
 export class MiddlewareProvider extends ProviderDecorator<IMiddleware> {
   constructor(private provider: IProvider<IMiddleware>) {

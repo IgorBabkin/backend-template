@@ -6,7 +6,9 @@ import { inject, key, provider, register, scope, singleton } from 'ts-ioc-contai
 import { IRepository } from '../../lib/em/IRepository';
 import { perScope } from '../../lib/mediator/Scope';
 
-export interface ITodoRepo extends IRepository<ITodo, ITodoValue> {}
+export interface ITodoRepo extends IRepository<ITodo, ITodoValue> {
+  findAll(): Promise<ITodo[]>;
+}
 
 export const ITodoRepoKey = Symbol('ITodoRepo');
 
@@ -55,5 +57,11 @@ export class TodoRepo implements ITodoRepo {
       },
     });
     return TodoRepo.toDomain(updated);
+  }
+
+  @handlePrismaError
+  async findAll(): Promise<ITodo[]> {
+    const records = await this.dbClient().todo.findMany();
+    return records.map(TodoRepo.toDomain);
   }
 }

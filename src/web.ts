@@ -4,7 +4,7 @@ import { ProcessEnv } from './env/ProcessEnv';
 import { Production } from './stages/Production';
 import { Development } from './stages/Development';
 import { Common } from './stages/Common';
-import { bodyParsing, handleNotFound } from './lib/express/modules/expressModules';
+import { bodyParsing, CORS, handleNotFound } from './lib/express/modules/expressModules';
 import { PAYLOADS } from './.generated/validators';
 import openapi from './.generated/swagger.json';
 import { OpenAPIV3 } from 'openapi-types';
@@ -22,6 +22,7 @@ const appScope = createContainer(Scope.Application)
   .use(process.env.NODE_ENV === 'production' ? new Production(env) : new Development(env));
 
 const server = new ExpressServerBuilder()
+  .addExpressModule(CORS)
   .addExpressModule(bodyParsing)
   .useModule(new OpenAPIRoutes(openapi as OpenAPIV3.Document, operations, PAYLOADS, appScope))
   .useModule(appScope.resolve(DomainErrorHandler))

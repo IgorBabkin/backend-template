@@ -61,6 +61,25 @@
         description: an existing item already exists
 
 /todo:
+  get:
+    tags:
+      - admins
+    summary: searches inventory
+    description: |
+      By passing in the appropriate options, you can search for
+      available inventory in the system
+    operationId: listTodo
+    responses:
+      "200":
+        description: search results matching criteria
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Todo'
+      "400":
+        description: bad input parameter
   post:
     tags:
       - admins
