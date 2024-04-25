@@ -18,7 +18,9 @@ export class RepositoryProvider extends ProviderDecorator<IRepository> {
           return function (...args: unknown[]) {
             const result = value.apply(target, args);
             if (result instanceof Promise) {
-              return result.catch(mapPrismaError);
+              return result.catch((e) =>
+                mapPrismaError(e, { method: prop.toString(), target: target.constructor.name }),
+              );
             }
             return result;
           };

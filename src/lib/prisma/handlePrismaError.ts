@@ -21,7 +21,7 @@ export const handlePrismaError = handleAsyncError((error: unknown) => {
   throw new UnknownError(errorToString(error));
 });
 
-export const mapPrismaError = (error: unknown): DomainError => {
+export const mapPrismaError = (error: unknown, context: { target: string; method: string }): DomainError => {
   if (error instanceof Prisma.PrismaClientKnownRequestError) {
     switch (error.code) {
       case 'P2002':
