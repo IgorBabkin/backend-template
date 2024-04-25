@@ -1,12 +1,19 @@
-import { alias, IContainer, IProvider, provider, ProviderDecorator } from 'ts-ioc-container';
+import { alias, by, IContainer, inject, IProvider, provider, ProviderDecorator } from 'ts-ioc-container';
 import { IMiddleware, MiddlewarePayload } from './IQueryHandler';
+import { TransactionMediator } from './transaction/TransactionMediator';
+import { SimpleMediator } from './SimpleMediator';
+import { IMediator } from './IMediator';
 
 export class Middleware implements IMiddleware {
-  constructor(private fn: () => IMiddleware) {}
+  private mediator: IMediator;
+
+  constructor(private fn: () => IMiddleware, @inject(by.scope.current) requestScope: IContainer) {
+    this.mediator = new TransactionMediator(new SimpleMediator(), requestScope);
+  }
 
   async handle(payload: MiddlewarePayload): Promise<void> {
     const handler = this.fn();
-    await handler.handle(payload);
+    return await this.mediator.send(handler, payload);
   }
 }
 
