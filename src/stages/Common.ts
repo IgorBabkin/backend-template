@@ -4,7 +4,7 @@ import { FindTodo } from '../useCase/todo/FindTodo';
 import { EntityManager } from '../lib/em/EntityManager';
 import { IAliasMemoKey } from '../lib/container/Memo';
 import { PersistReposUnitOfWork } from '../useCase/PersistReposUnitOfWork';
-import { Authenticate } from '../useCase/todo/Authenticate';
+import { Authenticate } from '../useCase/Authenticate';
 
 export class Common implements IContainerModule {
   applyTo(container: IContainer): void {

@@ -5,7 +5,7 @@ import { inject, register, scope } from 'ts-ioc-container';
 import { ITodoRepo, ITodoRepoKey } from '../../domains/todo/TodoRepo';
 import { perScope } from '../../lib/mediator/Scope';
 import { asMiddleware } from '../../lib/container/Middleware';
-import { FillQuery } from './FillQuery';
+import { FillQuery } from '../FillQuery';
 import * as console from 'node:console';
 
 export interface ITodoQuery {

@@ -1,4 +1,4 @@
-import { IMiddleware, MiddlewarePayload } from '../../lib/mediator/IQueryHandler';
+import { IMiddleware, MiddlewarePayload } from '../lib/mediator/IQueryHandler';
 
 export abstract class FillQuery<TQuery> implements IMiddleware {
   async handle({ query }: MiddlewarePayload): Promise<void> {
