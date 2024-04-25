@@ -44,9 +44,9 @@ export class TodoRepo implements ITodoRepo {
     await this.dbClient().todo.delete({ where: { id: +id } });
   }
 
-  async update(entity: ITodo): Promise<ITodo> {
+  async update(id: string, entity: Partial<ITodoValue>): Promise<ITodo> {
     const updated = await this.dbClient().todo.update({
-      where: { id: +entity.id },
+      where: { id: +id },
       data: {
         title: entity.title,
         description: entity.description,

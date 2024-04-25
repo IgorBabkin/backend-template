@@ -5,7 +5,7 @@ export interface IRepository<Entity extends IEntity = IEntity, Value = unknown> 
 
   create(value: Value): Promise<Entity>;
 
-  update(value: Partial<Value>): Promise<Entity>;
+  update(id: string, value: Partial<Value>): Promise<Entity>;
 
   findByIdOrFail(id: string): Promise<Entity>;
 }

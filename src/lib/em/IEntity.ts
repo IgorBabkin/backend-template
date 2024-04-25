@@ -1,4 +1,5 @@
 import { IRepository } from './IRepository';
+import { omitUndefined } from '../utils';
 
 export type ID = string;
 
@@ -27,14 +28,14 @@ export class Entity<State extends IEntity = IEntity> {
       return;
     }
     if (this.hasChanged) {
-      this.value = await repo.update(this.changes);
+      this.value = await repo.update(this.value.id, this.changes);
       this.hasChanged = false;
     }
   }
 
-  map(state: (state: State) => Partial<State>): void {
+  map(fn: (state: State) => Partial<State>): void {
     this.hasChanged = true;
-    this.changes = { ...this.changes, ...state };
+    this.changes = { ...this.changes, ...omitUndefined(fn(this.value)) };
   }
 
   delete() {
