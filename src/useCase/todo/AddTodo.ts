@@ -3,7 +3,7 @@ import { IQueryHandler } from '../../lib/mediator/IQueryHandler';
 import { by, inject } from 'ts-ioc-container';
 import { ITodoRepo, ITodoRepoKey } from '../../domains/todo/TodoRepo';
 import { IAppQuery } from '../middleware/IAppQuery';
-import { IGenerateSubTodos, IGenerateSubTodosKey } from './SyncAllPhone';
+import { IGenerateSubTodos, IGenerateSubTodosKey } from './GenerateSubTodos';
 import { transaction } from '../../lib/mediator/transaction/ITransactionContext';
 
 interface Query {

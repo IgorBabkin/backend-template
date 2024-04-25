@@ -5,7 +5,7 @@ import { EntityManager } from '../lib/em/EntityManager';
 import { IAliasMemoKey } from '../lib/container/Memo';
 import { PersistReposUnitOfWork } from '../useCase/middleware/PersistReposUnitOfWork';
 import { Authenticate } from '../useCase/middleware/Authenticate';
-import { GenerateSubTodos } from '../useCase/todo/SyncAllPhone';
+import { GenerateSubTodos } from '../useCase/todo/GenerateSubTodos';
 
 export class Common implements IContainerModule {
   applyTo(container: IContainer): void {
