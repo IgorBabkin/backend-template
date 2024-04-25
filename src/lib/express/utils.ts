@@ -1,4 +1,11 @@
-import { Ok, Created } from '@ibabkin/openapi-to-server';
+import { Ok, Created, NoContent } from '@ibabkin/openapi-to-server';
 
-export const ok = <T>(payload: T): Ok<T> => ({ status: 200, payload });
-export const created: Created = { status: 201, payload: undefined };
+const ok = <T>(payload: T): Ok<T> => ({ status: 200, payload });
+const created: Created = { status: 201, payload: undefined };
+const noContent: NoContent = { status: 204, payload: undefined };
+
+export const Response = {
+  ok,
+  created,
+  noContent,
+};

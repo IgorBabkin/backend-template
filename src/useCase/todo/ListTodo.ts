@@ -1,10 +1,10 @@
 import { ListTodoResponse } from '../../.generated/operations';
 import { IMiddleware, IQueryHandler } from '../../lib/mediator/IQueryHandler';
-import { AppQuery } from './FindTodo';
 import { ITodoRepo, ITodoRepoKey } from '../../domains/todo/TodoRepo';
 import { by, inject } from 'ts-ioc-container';
 import { request } from '../../lib/container/OperationProvider';
 import * as console from 'node:console';
+import { IAppQuery } from './IAppQuery';
 
 interface Query {}
 
@@ -28,7 +28,7 @@ export class ListTodo implements IListTodo {
   constructor(@inject(by.key(ITodoRepoKey)) private todoRepo: ITodoRepo) {}
 
   // eslint-disable-next-line no-empty-pattern
-  async handle({}: AppQuery<Query>): Promise<ListTodoResponse> {
+  async handle({}: IAppQuery<Query>): Promise<ListTodoResponse> {
     return await this.todoRepo.findAll();
   }
 }

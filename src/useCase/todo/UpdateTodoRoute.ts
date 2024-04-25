@@ -1,6 +1,6 @@
 import { UpdateTodoPayload, UpdateTodoResponse, UpdateTodoRoute } from '../../.generated/operations';
 import { Ok } from '@ibabkin/openapi-to-server';
-import { ok } from '../../lib/express/utils';
+import { Response } from '../../lib/express/utils';
 import { IUpdateTodo, UpdateTodo } from './UpdateTodo';
 import { inject } from 'ts-ioc-container';
 import { useOperation } from '../../lib/container/OperationProvider';
@@ -14,6 +14,6 @@ export class UpdateTodoHTTPRoute implements UpdateTodoRoute {
       description: body.description,
       todoID: params.id,
     });
-    return ok(response());
+    return Response.ok(response());
   }
 }

@@ -3,6 +3,7 @@ import { ITodo } from '../../domains/todo/ITodo';
 import { IQueryHandler } from '../../lib/mediator/IQueryHandler';
 import { inject } from 'ts-ioc-container';
 import { ITodoRepo, ITodoRepoKey } from '../../domains/todo/TodoRepo';
+import { IAppQuery } from './IAppQuery';
 
 interface Query {
   title: string;
@@ -14,7 +15,7 @@ export interface IAddTodo extends IQueryHandler<Query, () => ITodo> {}
 export class AddTodo implements IAddTodo {
   constructor(@inject(entityManager(ITodoRepoKey)) private em: EntityManager<ITodoRepo>) {}
 
-  async handle(query: Query): Promise<() => ITodo> {
+  async handle(query: IAppQuery<Query>): Promise<() => ITodo> {
     const todo = this.em.create({ title: query.title, description: query.description });
     return () => todo.getResult();
   }

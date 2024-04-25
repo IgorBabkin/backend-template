@@ -2,7 +2,7 @@ import { AddTodoPayload, AddTodoRoute } from '../../.generated/operations';
 import { AddTodo, IAddTodo } from './AddTodo';
 import { Created } from '@ibabkin/openapi-to-server';
 import { inject } from 'ts-ioc-container';
-import { created } from '../../lib/express/utils';
+import { Response } from '../../lib/express/utils';
 import { useOperation } from '../../lib/container/OperationProvider';
 
 export class AddTodoHTTPRoute implements AddTodoRoute {
@@ -13,6 +13,6 @@ export class AddTodoHTTPRoute implements AddTodoRoute {
       title: body.title,
       description: body.description,
     });
-    return created;
+    return Response.created;
   }
 }

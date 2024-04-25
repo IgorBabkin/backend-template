@@ -1,30 +1,11 @@
 import { entityManager, EntityManager } from '../../lib/em/EntityManager';
-import { ITodo } from '../../domains/todo/ITodo';
-import { Entity, ID } from '../../lib/em/IEntity';
 import { inject, register, scope } from 'ts-ioc-container';
 import { ITodoRepo, ITodoRepoKey } from '../../domains/todo/TodoRepo';
 import { perScope } from '../../lib/mediator/Scope';
 import { asMiddleware } from '../../lib/container/Middleware';
 import { FillQuery } from '../FillQuery';
 import * as console from 'node:console';
-
-export interface ITodoQuery {
-  todoID: ID;
-}
-
-interface UserQuery {
-  userId: string;
-}
-
-interface User {
-  id: string;
-  firstname: string;
-}
-
-type WithTodo<T> = T extends ITodoQuery ? T & { todo: Entity<ITodo> } : T;
-type WithUser<T> = T extends UserQuery ? T & { user: Entity<User> } : T;
-
-export type AppQuery<T> = WithUser<WithTodo<T>>;
+import { ITodoQuery, WithTodo } from './IAppQuery';
 
 @register(scope(perScope.Request))
 @asMiddleware('middleware-before', 'common')
