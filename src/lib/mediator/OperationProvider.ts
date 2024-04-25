@@ -1,9 +1,9 @@
 import { by, constructor, IContainer, inject, InjectionToken } from 'ts-ioc-container';
-import { TransactionMediator } from '../mediator/transaction/TransactionMediator';
-import { SimpleMediator } from '../mediator/SimpleMediator';
-import { IMediator } from '../mediator/IMediator';
+import { TransactionMediator } from './transaction/TransactionMediator';
+import { SimpleMediator } from './SimpleMediator';
+import { IMediator } from './IMediator';
 import { getProp, prop } from '../metadata';
-import { IMiddleware, IQueryHandler, useMiddleware } from '../mediator/IQueryHandler';
+import { IMiddleware, IQueryHandler, useMiddleware } from './IQueryHandler';
 import { Middleware } from './Middleware';
 
 export class Operation<TQuery, TResponse> implements IQueryHandler<TQuery, TResponse> {

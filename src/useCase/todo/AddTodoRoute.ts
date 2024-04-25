@@ -3,7 +3,7 @@ import { AddTodo, IAddTodo } from './AddTodo';
 import { Created } from '@ibabkin/openapi-to-server';
 import { inject } from 'ts-ioc-container';
 import { Response } from '../../lib/express/utils';
-import { useOperation } from '../../lib/container/OperationProvider';
+import { useOperation } from '../../lib/mediator/OperationProvider';
 
 export class AddTodoHTTPRoute implements AddTodoRoute {
   constructor(@inject(useOperation(AddTodo)) private addTodo: IAddTodo) {}

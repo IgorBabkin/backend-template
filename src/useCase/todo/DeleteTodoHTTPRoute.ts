@@ -1,5 +1,5 @@
 import { inject } from 'ts-ioc-container';
-import { useOperation } from '../../lib/container/OperationProvider';
+import { useOperation } from '../../lib/mediator/OperationProvider';
 import { DeleteTodoPayload, DeleteTodoRoute } from '.generated/operations';
 import { DeleteTodo, IDeleteTodo } from './DeleteTodo';
 import { NoContent } from '@ibabkin/openapi-to-server';

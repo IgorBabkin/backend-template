@@ -3,7 +3,7 @@ import { Ok } from '@ibabkin/openapi-to-server';
 import { Response } from '../../lib/express/utils';
 import { IUpdateTodo, UpdateTodo } from './UpdateTodo';
 import { inject } from 'ts-ioc-container';
-import { useOperation } from '../../lib/container/OperationProvider';
+import { useOperation } from '../../lib/mediator/OperationProvider';
 
 export class UpdateTodoHTTPRoute implements UpdateTodoRoute {
   constructor(@inject(useOperation(UpdateTodo)) private updateTodo: IUpdateTodo) {}

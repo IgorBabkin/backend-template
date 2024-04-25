@@ -1,6 +1,6 @@
-import { accessor } from './utils';
 import { DependencyKey, IContainer } from 'ts-ioc-container';
 import { AliasPredicate } from 'ts-ioc-container/typings/container/IContainer';
+import { accessor } from './di';
 
 export type IAliasMemo = Map<string, DependencyKey[]>;
 export const IAliasMemoKey = accessor<Map<string, DependencyKey[]>>(Symbol('IAliasMemo'));

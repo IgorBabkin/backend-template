@@ -5,7 +5,7 @@ import { Request, Response } from 'express';
 import { ZodType } from 'zod';
 import { IContainer, Provider } from 'ts-ioc-container';
 import { Scope } from '../../mediator/Scope';
-import { IRequestContext } from '../../container/RequestContext';
+import { IRequestContext } from '../../mediator/RequestContext';
 
 export class OpenAPIRoutes implements IServerBuilderModule {
   constructor(

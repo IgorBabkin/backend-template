@@ -2,7 +2,7 @@ import { ListTodoResponse } from '../../.generated/operations';
 import { IMiddleware, IQueryHandler } from '../../lib/mediator/IQueryHandler';
 import { ITodoRepo, ITodoRepoKey } from '../../domains/todo/TodoRepo';
 import { by, inject } from 'ts-ioc-container';
-import { request } from '../../lib/container/OperationProvider';
+import { request } from '../../lib/mediator/OperationProvider';
 import * as console from 'node:console';
 import { IAppQuery } from '../middleware/IAppQuery';
 

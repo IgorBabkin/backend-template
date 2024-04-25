@@ -2,7 +2,7 @@ import { entityManager, EntityManager } from '../../lib/em/EntityManager';
 import { inject, register, scope } from 'ts-ioc-container';
 import { ITodoRepo, ITodoRepoKey } from '../../domains/todo/TodoRepo';
 import { perScope } from '../../lib/mediator/Scope';
-import { asMiddleware } from '../../lib/container/Middleware';
+import { asMiddleware } from '../../lib/mediator/Middleware';
 import { FillQueryMiddleware } from '../middleware/FillQueryMiddleware';
 import { ITodoQuery, WithTodo } from '../middleware/IAppQuery';
 

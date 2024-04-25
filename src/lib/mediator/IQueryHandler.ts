@@ -1,5 +1,5 @@
 import { IContainer } from 'ts-ioc-container';
-import { IRequestContext } from '../container/RequestContext';
+import { IRequestContext } from './RequestContext';
 import { byAliasesMemoized } from '../container/Memo';
 
 export interface IQueryHandler<TQuery = unknown, TResponse = unknown> {

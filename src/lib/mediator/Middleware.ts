@@ -1,5 +1,5 @@
 import { alias, IContainer, IProvider, provider, ProviderDecorator } from 'ts-ioc-container';
-import { IMiddleware, MiddlewarePayload } from '../mediator/IQueryHandler';
+import { IMiddleware, MiddlewarePayload } from './IQueryHandler';
 
 export class Middleware implements IMiddleware {
   constructor(private fn: () => IMiddleware) {}

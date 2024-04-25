@@ -3,7 +3,7 @@ import { GetTodo, IGetTodo } from './GetTodo';
 import { Ok } from '@ibabkin/openapi-to-server';
 import { inject } from 'ts-ioc-container';
 import { Response } from '../../lib/express/utils';
-import { useOperation } from '../../lib/container/OperationProvider';
+import { useOperation } from '../../lib/mediator/OperationProvider';
 
 export class GetTodoHTTPRoute implements GetTodoRoute {
   constructor(@inject(useOperation(GetTodo)) private getTodo: IGetTodo) {}

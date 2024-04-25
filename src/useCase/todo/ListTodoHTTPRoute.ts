@@ -1,5 +1,5 @@
 import { inject } from 'ts-ioc-container';
-import { useOperation } from '../../lib/container/OperationProvider';
+import { useOperation } from '../../lib/mediator/OperationProvider';
 import { Ok } from '@ibabkin/openapi-to-server';
 import { Response } from '../../lib/express/utils';
 import { ListTodoPayload, ListTodoResponse, ListTodoRoute } from '../../.generated/operations';
