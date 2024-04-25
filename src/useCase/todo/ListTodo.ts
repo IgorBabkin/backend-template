@@ -4,7 +4,7 @@ import { ITodoRepo, ITodoRepoKey } from '../../domains/todo/TodoRepo';
 import { by, inject } from 'ts-ioc-container';
 import { request } from '../../lib/container/OperationProvider';
 import * as console from 'node:console';
-import { IAppQuery } from './IAppQuery';
+import { IAppQuery } from '../middleware/IAppQuery';
 
 interface Query {}
 

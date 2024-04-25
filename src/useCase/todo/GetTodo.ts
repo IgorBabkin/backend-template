@@ -1,6 +1,6 @@
 import { GetTodoResponse } from '../../.generated/operations';
 import { IQueryHandler } from '../../lib/mediator/IQueryHandler';
-import { IAppQuery, ITodoQuery } from './IAppQuery';
+import { IAppQuery, ITodoQuery } from '../middleware/IAppQuery';
 
 interface Query extends ITodoQuery {}
 

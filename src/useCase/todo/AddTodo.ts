@@ -3,7 +3,7 @@ import { ITodo } from '../../domains/todo/ITodo';
 import { IQueryHandler } from '../../lib/mediator/IQueryHandler';
 import { inject } from 'ts-ioc-container';
 import { ITodoRepo, ITodoRepoKey } from '../../domains/todo/TodoRepo';
-import { IAppQuery } from './IAppQuery';
+import { IAppQuery } from '../middleware/IAppQuery';
 
 interface Query {
   title: string;

@@ -1,8 +1,8 @@
-import { IMiddleware } from '../lib/mediator/IQueryHandler';
+import { IMiddleware } from '../../lib/mediator/IQueryHandler';
 import { register, scope } from 'ts-ioc-container';
 import * as console from 'node:console';
-import { perScope } from '../lib/mediator/Scope';
-import { asMiddleware } from '../lib/container/Middleware';
+import { perScope } from '../../lib/mediator/Scope';
+import { asMiddleware } from '../../lib/container/Middleware';
 
 @register(scope(perScope.Request))
 @asMiddleware('middleware-before', 'admins')

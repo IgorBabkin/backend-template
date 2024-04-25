@@ -12,7 +12,7 @@ import { operations } from './operations';
 import { DomainErrorHandler } from './useCase/errorHandler/DomainErrorHandler';
 import { OpenAPIRoutes } from './lib/express/modules/OpenAPIRoutes';
 import { RequestLogger } from './lib/express/modules/RequestLogger';
-import { DisposeInstances } from './useCase/DisposeInstances';
+import { DisposeInstances } from './useCase/middleware/DisposeInstances';
 import { Scope } from './lib/mediator/Scope';
 
 const env = ProcessEnv.parse(process.env);

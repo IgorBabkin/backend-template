@@ -3,13 +3,13 @@ import { inject, register, scope } from 'ts-ioc-container';
 import { ITodoRepo, ITodoRepoKey } from '../../domains/todo/TodoRepo';
 import { perScope } from '../../lib/mediator/Scope';
 import { asMiddleware } from '../../lib/container/Middleware';
-import { FillQuery } from '../FillQuery';
+import { FillQueryMiddleware } from '../middleware/FillQueryMiddleware';
 import * as console from 'node:console';
-import { ITodoQuery, WithTodo } from './IAppQuery';
+import { ITodoQuery, WithTodo } from '../middleware/IAppQuery';
 
 @register(scope(perScope.Request))
 @asMiddleware('middleware-before', 'common')
-export class FindTodo extends FillQuery<ITodoQuery> {
+export class FindTodoMiddleware extends FillQueryMiddleware<ITodoQuery> {
   constructor(@inject(entityManager(ITodoRepoKey)) private em: EntityManager<ITodoRepo>) {
     super();
   }

@@ -2,7 +2,7 @@ import { PrismaClient } from '@prisma/client';
 import { IContainer, key, provider, register, scope, singleton } from 'ts-ioc-container';
 import { ITransactionContext, ITransactionContextKey } from '../mediator/transaction/ITransactionContext';
 import { perScope } from '../mediator/Scope';
-import { onDispose } from '../../useCase/DisposeInstances';
+import { onDispose } from '../../useCase/middleware/DisposeInstances';
 
 @register(key(ITransactionContextKey), scope(perScope.Application))
 @provider(singleton())
