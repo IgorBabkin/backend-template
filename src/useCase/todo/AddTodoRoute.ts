@@ -1,18 +1,25 @@
-import { AddTodoPayload, AddTodoRoute } from '../../.generated/operations';
+import { AddTodoPayload, AddTodoResponse, AddTodoRoute } from '../../.generated/operations';
 import { AddTodo, IAddTodo } from './AddTodo';
-import { Created } from '@ibabkin/openapi-to-server';
 import { inject } from 'ts-ioc-container';
-import { Response } from '../../lib/express/utils';
 import { useOperation } from '../../lib/mediator/OperationProvider';
+import { IRequestContext } from '../../lib/mediator/RequestContext';
 
 export class AddTodoHTTPRoute implements AddTodoRoute {
-  constructor(@inject(useOperation(AddTodo)) private addTodo: IAddTodo) {}
+  constructor(
+    @inject(useOperation(AddTodo)) private addTodo: IAddTodo,
+    @inject(IRequestContext.resolve) private context: IRequestContext,
+  ) {}
 
-  async handle({ body }: AddTodoPayload): Promise<Created> {
-    const response = await this.addTodo.handle({
+  async handle({ body }: AddTodoPayload): Promise<AddTodoResponse> {
+    const todo = await this.addTodo.handle({
       title: body.title,
       description: body.description,
     });
-    return Response.created;
+    return {
+      status: 201,
+      headers: {
+        Location: this.context.getUrl('getTodo', { params: { id: todo().id } }),
+      },
+    };
   }
 }

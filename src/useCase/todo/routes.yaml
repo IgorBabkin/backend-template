@@ -122,6 +122,11 @@
     responses:
       "201":
         description: item created
+        headers:
+          Location:
+            description: The URL of the created item
+            schema:
+              type: string
       "400":
         description: "invalid input, object invalid"
       "409":

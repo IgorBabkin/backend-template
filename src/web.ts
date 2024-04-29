@@ -14,6 +14,7 @@ import { OpenAPIRoutes } from './lib/express/modules/OpenAPIRoutes';
 import { RequestLogger } from './lib/express/modules/RequestLogger';
 import { DisposeInstances } from './useCase/middleware/DisposeInstances';
 import { Scope } from './lib/mediator/Scope';
+import { RouteMediator } from './lib/express/modules/RouteMediator';
 
 const env = ProcessEnv.parse(process.env);
 
@@ -24,7 +25,7 @@ const appScope = createContainer(Scope.Application)
 const server = new ExpressServerBuilder()
   .addExpressModule(CORS)
   .addExpressModule(bodyParsing)
-  .useModule(new OpenAPIRoutes(openapi as OpenAPIV3.Document, operations, PAYLOADS, appScope))
+  .useModule(new OpenAPIRoutes(openapi as OpenAPIV3.Document, new RouteMediator(operations, PAYLOADS, appScope)))
   .useModule(appScope.resolve(DomainErrorHandler))
   .useModule(appScope.resolve(RequestLogger))
   .addExpressModule(handleNotFound)

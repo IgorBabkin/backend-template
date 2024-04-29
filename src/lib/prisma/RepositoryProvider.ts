@@ -10,7 +10,7 @@ export class RepositoryProvider extends ProviderDecorator<IRepository> {
   resolve(container: IContainer, ...args: unknown[]): IRepository {
     const instance = this.provider.resolve(container, ...args);
     return new Proxy(instance, {
-      get(target, prop) {
+      get(target, prop, receiver) {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         const value = target[prop];

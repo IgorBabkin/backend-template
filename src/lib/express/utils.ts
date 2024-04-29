@@ -1,11 +1,18 @@
-import { Ok, Created, NoContent } from '@ibabkin/openapi-to-server';
+import { HttpResponse } from '@ibabkin/openapi-to-server';
+import { HttpHeaders } from '@ibabkin/openapi-to-server/cjm/utils/http';
 
-const ok = <T>(payload: T): Ok<T> => ({ status: 200, payload });
-const created: Created = { status: 201, payload: undefined };
-const noContent: NoContent = { status: 204, payload: undefined };
+export interface Created extends HttpResponse {
+  status: 201;
+  headers: {
+    Location: string;
+  };
+}
+
+const created = <THeaders extends Partial<HttpHeaders>>({ headers }: { headers?: THeaders }) => ({
+  status: 201,
+  headers,
+});
 
 export const Response = {
-  ok,
   created,
-  noContent,
 };

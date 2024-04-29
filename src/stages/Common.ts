@@ -5,7 +5,6 @@ import { EntityManager } from '../lib/em/EntityManager';
 import { IAliasMemoKey } from '../lib/container/Memo';
 import { PersistReposUnitOfWork } from '../useCase/middleware/PersistReposUnitOfWork';
 import { Authenticate } from '../useCase/middleware/Authenticate';
-import { GenerateSubTodos } from '../useCase/todo/GenerateSubTodos';
 
 export class Common implements IContainerModule {
   applyTo(container: IContainer): void {
@@ -15,7 +14,6 @@ export class Common implements IContainerModule {
       .add(R.fromClass(PersistReposUnitOfWork))
       .add(R.fromClass(FindTodoMiddleware))
       .add(R.fromClass(Authenticate))
-      .add(R.fromClass(GenerateSubTodos))
       .add(R.fromClass(EntityManager));
   }
 }
