@@ -2,7 +2,7 @@ import { IContainer, Provider } from 'ts-ioc-container';
 import { HttpResponse, Route, RouteOptions } from '@ibabkin/openapi-to-server';
 import { ZodType } from 'zod';
 import { Scope } from '../../components/Scope';
-import { AppRequestContext, IRequestContext, IRequestContextKey } from '../../components/RequestContext';
+import { AppRequestContext, IRequestContextKey } from '../../components/RequestContext';
 
 export class RouteMediator {
   private routes = new Map<string, string>();
@@ -17,19 +17,20 @@ export class RouteMediator {
     this.routes.set(operationId, path);
   }
 
+  private createContext(options: { tags: string[]; getBaseURI: () => string }) {
+    return new AppRequestContext(this.routes, options);
+  }
+
   async handleRequest(
     operation: (scope: IContainer) => Route<unknown, HttpResponse>,
     payloadValidator: ZodType,
     data: unknown,
-    options: RouteOptions & { baseURI: () => string },
+    options: RouteOptions & { getBaseURI: () => string },
   ) {
     const requestScope = this.appScope.createScope(Scope.Request);
-    requestScope.register(
-      IRequestContextKey.key,
-      Provider.fromValue<IRequestContext>(new AppRequestContext(this.routes, options.tags, options.baseURI)),
-    );
+    requestScope.register(IRequestContextKey.key, Provider.fromValue(this.createContext(options)));
     try {
-      return await operation(requestScope).handle(payloadValidator.parse(data), options);
+      return await operation(requestScope).handle(payloadValidator.parse(data));
     } finally {
       requestScope.dispose();
     }

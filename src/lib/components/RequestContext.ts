@@ -8,11 +8,15 @@ export interface IRequestContext extends RequestContext {
 export const IRequestContextKey = accessor<IRequestContext>(Symbol('IRequestContext'));
 
 export class AppRequestContext implements IRequestContext {
-  constructor(private routes: Map<string, string>, public tags: string[], private getBaseURI: () => string) {}
+  tags: string[];
+
+  constructor(private routes: Map<string, string>, public options: { tags: string[]; getBaseURI: () => string }) {
+    this.tags = options.tags;
+  }
 
   getUrl<Key extends keyof RoutesPayloads>(key: Key, payload: RoutesPayloads[Key]): string {
     const url = this.routes.get(key)!;
-    return `${this.getBaseURI()}${this.addQuery(this.addParams(url, payload), payload)}`;
+    return `${this.options.getBaseURI()}${this.addQuery(this.addParams(url, payload), payload)}`;
   }
 
   private addParams(url: string, payload: Record<string, unknown>) {

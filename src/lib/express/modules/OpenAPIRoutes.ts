@@ -4,9 +4,10 @@ import { HttpResponse } from '@ibabkin/openapi-to-server';
 import { Request, Response } from 'express';
 import { RouteMediator } from './RouteMediator';
 
-const getBaseURI = (req: Request) => {
-  return `${req.protocol}://${req.get('host')}`;
-};
+const createOptions = ({ req, tags = [] }: { req: Request; tags?: string[] }) => ({
+  tags,
+  getBaseURI: () => `${req.protocol}://${req.get('host')}`,
+});
 
 export class OpenAPIRoutes implements IServerBuilderModule {
   constructor(private doc: OpenAPIV3.Document, private mediator: RouteMediator) {}
@@ -41,7 +42,7 @@ export class OpenAPIRoutes implements IServerBuilderModule {
     builder.addExpressModule((server) => {
       server.get(url, (req, res, next) =>
         this.mediator
-          .handleRequest(operation, payloadValidator, req, { tags: tags ?? [], baseURI: () => getBaseURI(req) })
+          .handleRequest(operation, payloadValidator, req, createOptions({ req, tags }))
           .then((r) => this.sendResponse(res, r))
           .catch((e) => next(e)),
       );
@@ -55,7 +56,7 @@ export class OpenAPIRoutes implements IServerBuilderModule {
     builder.addExpressModule((server) => {
       server.post(url, (req, res, next) =>
         this.mediator
-          .handleRequest(operation, payloadValidator, req, { tags: tags ?? [], baseURI: () => getBaseURI(req) })
+          .handleRequest(operation, payloadValidator, req, createOptions({ req, tags }))
           .then((r) => this.sendResponse(res, r))
           .catch((e) => next(e)),
       );
@@ -69,7 +70,7 @@ export class OpenAPIRoutes implements IServerBuilderModule {
     builder.addExpressModule((server) => {
       server.put(url, (req, res, next) =>
         this.mediator
-          .handleRequest(operation, payloadValidator, req, { tags: tags ?? [], baseURI: () => getBaseURI(req) })
+          .handleRequest(operation, payloadValidator, req, createOptions({ req, tags }))
           .then((r) => this.sendResponse(res, r))
           .catch((e) => next(e)),
       );
@@ -83,7 +84,7 @@ export class OpenAPIRoutes implements IServerBuilderModule {
     builder.addExpressModule((server) => {
       server.delete(url, (req, res, next) =>
         this.mediator
-          .handleRequest(operation, payloadValidator, req, { tags: tags ?? [], baseURI: () => getBaseURI(req) })
+          .handleRequest(operation, payloadValidator, req, createOptions({ req, tags }))
           .then((r) => this.sendResponse(res, r))
           .catch((e) => next(e)),
       );

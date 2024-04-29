@@ -4,15 +4,18 @@ import { isTransaction, ITransactionContext, ITransactionContextKey } from './IT
 import { constructor, IContainer, Provider } from 'ts-ioc-container';
 
 export class TransactionMediator implements IMediator {
-  constructor(private mediator: IMediator, private scope: IContainer) {}
+  private readonly context: ITransactionContext;
+
+  constructor(private mediator: IMediator, private scope: IContainer) {
+    this.context = ITransactionContextKey.resolve(scope);
+  }
 
   async send<TResponse, TQuery>(handler: IQueryHandler<TQuery, TResponse>, query: TQuery): Promise<TResponse> {
     if (isTransaction(handler.constructor as constructor<unknown>)) {
-      const parentContext = this.scope.resolve<ITransactionContext>(ITransactionContextKey);
       const transactionScope = this.scope.createScope('transaction');
       try {
-        return await parentContext.execute((childContext) => {
-          this.scope.register(ITransactionContextKey, Provider.fromValue(childContext));
+        return await this.context.execute((childContext) => {
+          this.scope.register(ITransactionContextKey.key, Provider.fromValue(childContext));
           return this.mediator.send(handler, query);
         });
       } finally {
