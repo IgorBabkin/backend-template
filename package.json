@@ -23,7 +23,9 @@
     "generate:validators": "openapi-to-zod --input src/swagger.yaml --output src/.generated/validators.ts",
     "generate:format": "prettier --write \"src/.generated/**/*.{js,ts}\" --no-error-on-unmatched-pattern",
     "prepack": "rimraf esm && tsc -p tsconfig.client.json --outDir esm",
-    "postinstall": "husky install"
+    "postinstall": "husky install",
+    "type-check": "tsc --noEmit",
+    "type-check:watch": "tsc --noEmit --watch"
   },
   "config": {
     "commitizen": {

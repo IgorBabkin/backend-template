@@ -7,11 +7,12 @@ import { Response } from '../../lib/express/Response';
 export class UpdateTodoHTTPRoute implements UpdateTodoRoute {
   constructor(@inject(useOperation(UpdateTodo)) private updateTodo: IUpdateTodo) {}
 
-  async handle({ body, params }: UpdateTodoPayload): Promise<UpdateTodoResponse> {
+  async handle({ headers, body, params }: UpdateTodoPayload): Promise<UpdateTodoResponse> {
     const response = await this.updateTodo.handle({
       title: body.title,
       description: body.description,
       todoID: params.id,
+      authToken: headers.Authorization,
     });
     return Response.OK({ body: response() });
   }

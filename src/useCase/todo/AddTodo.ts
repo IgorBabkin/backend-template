@@ -1,21 +1,27 @@
 import { ITodo } from '../../domains/todo/ITodo';
 import { IQueryHandler } from '../../lib/mediator/IQueryHandler';
-import { inject } from 'ts-ioc-container';
+import { by, IContainer, inject } from 'ts-ioc-container';
 import { ITodoRepo, ITodoRepoKey } from '../../domains/todo/TodoRepo';
-import { IAppQuery } from '../middleware/IAppQuery';
+import { IAppQuery, IAuthQuery, WithAuthUser } from '../middleware/IAppQuery';
 import { EntityManager, entityManager } from '../../lib/em/EntityManager';
+import { AdminHandler } from './AdminHandler';
 
-interface Query {
+interface Query extends IAuthQuery {
   title: string;
   description: string;
 }
 
 export interface IAddTodo extends IQueryHandler<Query, () => ITodo> {}
 
-export class AddTodo implements IAddTodo {
-  constructor(@inject(entityManager(ITodoRepoKey)) private em: EntityManager<ITodoRepo>) {}
+export class AddTodo extends AdminHandler<Query, () => ITodo> implements IAddTodo {
+  constructor(
+    @inject(entityManager(ITodoRepoKey)) private em: EntityManager<ITodoRepo>,
+    @inject(by.scope.current) scope: IContainer,
+  ) {
+    super(scope);
+  }
 
-  async handle(query: IAppQuery<Query>): Promise<() => ITodo> {
+  async process(query: WithAuthUser<IAppQuery<Query>>): Promise<() => ITodo> {
     const todo = this.em.create({ title: query.title, description: query.description });
     return () => todo.getResult();
   }

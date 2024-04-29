@@ -1,10 +1,11 @@
 import { IMiddleware, IQueryHandler } from '../../lib/mediator/IQueryHandler';
 import { ITodoRepo, ITodoRepoKey } from '../../domains/todo/TodoRepo';
-import { by, inject } from 'ts-ioc-container';
+import { by, IContainer, inject } from 'ts-ioc-container';
 import { request } from '../../lib/mediator/OperationProvider';
 import * as console from 'node:console';
 import { IAppQuery } from '../middleware/IAppQuery';
 import { ITodo } from '../../domains/todo/ITodo';
+import { MainHandler } from './MainHandler';
 
 interface Query {}
 
@@ -24,11 +25,12 @@ export class LogAfter implements IMiddleware {
 
 @request('before', [LogBefore])
 @request('after', [LogAfter])
-export class ListTodo implements IListTodo {
-  constructor(@inject(by.key(ITodoRepoKey)) private todoRepo: ITodoRepo) {}
+export class ListTodo extends MainHandler<Query, ITodo[]> implements IListTodo {
+  constructor(@inject(by.key(ITodoRepoKey)) private todoRepo: ITodoRepo, @inject(by.scope.current) scope: IContainer) {
+    super(scope);
+  }
 
-  // eslint-disable-next-line no-empty-pattern
-  async handle({}: IAppQuery<Query>): Promise<ITodo[]> {
+  protected async process(query: IAppQuery<Query>): Promise<ITodo[]> {
     return await this.todoRepo.findAll();
   }
 }
