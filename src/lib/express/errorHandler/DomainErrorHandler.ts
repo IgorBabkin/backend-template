@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from 'express';
-import { PersistenceError } from '../../domains/errors/PersistenceError';
-import { EntityNotFoundError } from '../../domains/errors/EntityNotFoundError';
+import { PersistenceError } from '../../../domains/errors/PersistenceError';
+import { EntityNotFoundError } from '../../../domains/errors/EntityNotFoundError';
 import { by, inject } from 'ts-ioc-container';
-import { IServerBuilder, IServerBuilderModule } from '../../lib/express/IServerBuilder';
+import { IServerBuilder, IServerBuilderModule } from '../IServerBuilder';
 import HttpError from 'standard-http-error';
 
 export type Payload = {
@@ -17,8 +17,7 @@ export interface IExpressErrorHandlerStrategy {
 }
 
 export class DomainErrorHandler implements IServerBuilderModule {
-  constructor(@inject(by.key(IExpressErrorHandlerStrategyKey)) private strategy: IExpressErrorHandlerStrategy) {
-  }
+  constructor(@inject(by.key(IExpressErrorHandlerStrategyKey)) private strategy: IExpressErrorHandlerStrategy) {}
 
   applyTo(builder: IServerBuilder): void {
     builder.addExpressModule((app) => {

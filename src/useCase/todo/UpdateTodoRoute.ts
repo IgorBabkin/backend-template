@@ -2,6 +2,7 @@ import { UpdateTodoPayload, UpdateTodoResponse, UpdateTodoRoute } from '../../.g
 import { IUpdateTodo, UpdateTodo } from './UpdateTodo';
 import { inject } from 'ts-ioc-container';
 import { useOperation } from '../../lib/mediator/OperationProvider';
+import { Response } from '../../lib/express/Response';
 
 export class UpdateTodoHTTPRoute implements UpdateTodoRoute {
   constructor(@inject(useOperation(UpdateTodo)) private updateTodo: IUpdateTodo) {}
@@ -12,10 +13,6 @@ export class UpdateTodoHTTPRoute implements UpdateTodoRoute {
       description: body.description,
       todoID: params.id,
     });
-    return {
-      status: 200,
-      headers: {},
-      body: response(),
-    };
+    return Response.OK({ body: response() });
   }
 }

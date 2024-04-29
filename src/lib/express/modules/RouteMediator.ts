@@ -21,12 +21,12 @@ export class RouteMediator {
     operation: (scope: IContainer) => Route<unknown, HttpResponse>,
     payloadValidator: ZodType,
     data: unknown,
-    options: RouteOptions,
+    options: RouteOptions & { baseURI: string },
   ) {
     const requestScope = this.appScope.createScope(Scope.Request);
     requestScope.register(
       IRequestContext.key,
-      Provider.fromValue<IRequestContext>(new AppRequestContext(this.routes, options.tags)),
+      Provider.fromValue<IRequestContext>(new AppRequestContext(this.routes, options.tags, options.baseURI)),
     );
     try {
       return await operation(requestScope).handle(payloadValidator.parse(data), options);

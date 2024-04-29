@@ -9,7 +9,7 @@ import { PAYLOADS } from './.generated/validators';
 import openapi from './.generated/swagger.json';
 import { OpenAPIV3 } from 'openapi-types';
 import { operations } from './operations';
-import { DomainErrorHandler } from './useCase/errorHandler/DomainErrorHandler';
+import { DomainErrorHandler } from './lib/express/errorHandler/DomainErrorHandler';
 import { OpenAPIRoutes } from './lib/express/modules/OpenAPIRoutes';
 import { RequestLogger } from './lib/express/modules/RequestLogger';
 import { DisposeInstances } from './useCase/middleware/DisposeInstances';

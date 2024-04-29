@@ -1,9 +1,9 @@
-import { createLogger, ILogger } from '../../domains/logger/ILogger';
-import { DomainError } from '../../domains/errors/DomainError';
+import { createLogger, ILogger } from '../../../domains/logger/ILogger';
+import { DomainError } from '../../../domains/errors/DomainError';
 import { IExpressErrorHandlerStrategy, IExpressErrorHandlerStrategyKey, Payload } from './DomainErrorHandler';
 import { inject, key, provider, register, scope, singleton } from 'ts-ioc-container';
 import { Response } from 'express';
-import { perScope } from '../../lib/mediator/Scope';
+import { perScope } from '../../mediator/Scope';
 
 @register(key(IExpressErrorHandlerStrategyKey), scope(perScope.Application))
 @provider(singleton())

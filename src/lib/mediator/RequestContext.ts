@@ -8,9 +8,7 @@ export interface IRequestContext extends RequestContext {
 export const IRequestContext = accessor<IRequestContext>(Symbol('IRequestContext'));
 
 export class AppRequestContext implements IRequestContext {
-  private baseURI = 'http://localhost:3000';
-
-  constructor(private routes: Map<string, string>, public tags: string[] = []) {}
+  constructor(private routes: Map<string, string>, public tags: string[], private baseURI: string) {}
 
   getUrl<Key extends keyof RoutesPayloads>(key: Key, payload: RoutesPayloads[Key]): string {
     const url = this.routes.get(key)!;

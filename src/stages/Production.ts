@@ -3,7 +3,7 @@ import { IEnv } from '../env/IEnv';
 import { PrismaTransactionContext } from '../lib/prisma/PrismaTransactionContext';
 import { WinstonLogger } from '../domains/logger/WinstonLogger';
 import { PrismaClient } from '@prisma/client';
-import { ProdErrorHandleStrategy } from '../useCase/errorHandler/ProdErrorHandleStrategy';
+import { ProdErrorHandleStrategy } from '../lib/express/errorHandler/ProdErrorHandleStrategy';
 import { createLogger, format, transports } from 'winston';
 
 export class Production implements IContainerModule {

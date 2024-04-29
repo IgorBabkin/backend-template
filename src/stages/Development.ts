@@ -4,7 +4,7 @@ import { PrismaTransactionContext } from '../lib/prisma/PrismaTransactionContext
 import { PrismaClient } from '@prisma/client';
 import { WinstonLogger } from '../domains/logger/WinstonLogger';
 import { createLogger, format, transports } from 'winston';
-import { DevErrorHandleStrategy } from '../useCase/errorHandler/DevErrorHandleStrategy';
+import { DevErrorHandleStrategy } from '../lib/express/errorHandler/DevErrorHandleStrategy';
 
 export class Development implements IContainerModule {
   private logger = createLogger({

@@ -3,6 +3,7 @@ import { AddTodo, IAddTodo } from './AddTodo';
 import { inject } from 'ts-ioc-container';
 import { useOperation } from '../../lib/mediator/OperationProvider';
 import { IRequestContext } from '../../lib/mediator/RequestContext';
+import { Response } from '../../lib/express/Response';
 
 export class AddTodoHTTPRoute implements AddTodoRoute {
   constructor(
@@ -15,11 +16,6 @@ export class AddTodoHTTPRoute implements AddTodoRoute {
       title: body.title,
       description: body.description,
     });
-    return {
-      status: 302,
-      headers: {
-        Location: this.context.getUrl('getTodo', { params: { id: todo().id } }),
-      },
-    };
+    return Response.Redirect({ to: this.context.getUrl('getTodo', { params: { id: todo().id } }) });
   }
 }
