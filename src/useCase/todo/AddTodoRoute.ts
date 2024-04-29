@@ -16,7 +16,7 @@ export class AddTodoHTTPRoute implements AddTodoRoute {
       description: body.description,
     });
     return {
-      status: 201,
+      status: 302,
       headers: {
         Location: this.context.getUrl('getTodo', { params: { id: todo().id } }),
       },
