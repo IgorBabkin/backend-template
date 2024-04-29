@@ -1,6 +1,6 @@
 {
   "name": "@ibabkin/backend-template",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "scripts": {
     "start": "node -r reflect-metadata -r dotenv/config ./build/web.js",
     "start:dev": "ts-node -r reflect-metadata -r dotenv/config src/web.ts",
