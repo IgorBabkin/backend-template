@@ -1,15 +1,13 @@
-import { IMiddleware, IQueryHandler } from '../../../lib/mediator/IQueryHandler';
-import { ITodoRepo, ITodoRepoKey } from '../../../domains/todo/TodoRepo';
 import { by, IContainer, inject } from 'ts-ioc-container';
 import { request } from '../../../lib/components/Operation';
-import * as console from 'node:console';
-import { IAppQuery } from '../../IAppQuery';
-import { ITodo } from '../../../domains/todo/ITodo';
+import { IMiddleware, IQueryHandler } from '../../../lib/mediator/IQueryHandler';
+import console from 'node:console';
 import { MainHandler } from '../../MainHandler';
+import { ITodo } from '../../../domains/todo/ITodo';
+import { ITodoRepo, ITodoRepoKey } from '../../../domains/todo/TodoRepo';
+import { IAppQuery } from '../../IAppQuery';
 
 interface Query {}
-
-export interface IListTodo extends IQueryHandler<Query, ITodo[]> {}
 
 export class LogBefore implements IMiddleware {
   async handle(): Promise<void> {
@@ -25,7 +23,7 @@ export class LogAfter implements IMiddleware {
 
 @request('before', [LogBefore])
 @request('after', [LogAfter])
-export class ListTodo extends MainHandler<Query, ITodo[]> implements IListTodo {
+export class ListTodo extends MainHandler<Query, ITodo[]> implements IQueryHandler<Query, ITodo[]> {
   constructor(@inject(by.key(ITodoRepoKey)) private todoRepo: ITodoRepo, @inject(by.scope.current) scope: IContainer) {
     super(scope);
   }

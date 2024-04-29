@@ -1,10 +1,10 @@
 import { Operations } from '.generated/operations';
 import { IContainer } from 'ts-ioc-container';
-import { AddTodoHTTPRoute } from './useCase/todo/add/AddTodoHTTPRoute';
-import { UpdateTodoHTTPRoute } from './useCase/todo/update/UpdateTodoHTTPRoute';
-import { GetTodoHTTPRoute } from './useCase/todo/get/GetTodoHTTPRoute';
-import { ListTodoHTTPRoute } from './useCase/todo/list/ListTodoHTTPRoute';
-import { DeleteTodoHTTPRoute } from './useCase/todo/delete/DeleteTodoHTTPRoute';
+import { AddTodoHTTPRoute } from './useCase/todo/operations/AddTodoHTTPRoute';
+import { DeleteTodoHTTPRoute } from './useCase/todo/operations/DeleteTodoHTTPRoute';
+import { GetTodoHTTPRoute } from './useCase/todo/operations/GetTodoHTTPRoute';
+import { ListTodoHTTPRoute } from './useCase/todo/operations/ListTodoHTTPRoute';
+import { UpdateTodoHTTPRoute } from './useCase/todo/operations/UpdateTodoHTTPRoute';
 
 export const operations: Operations = {
   getTodo: (scope: IContainer) => scope.resolve(GetTodoHTTPRoute),

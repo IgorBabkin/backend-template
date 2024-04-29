@@ -1,13 +1,13 @@
 import { AddTodoPayload, AddTodoResponse, AddTodoRoute } from '../../../.generated/operations';
-import { AddTodo, IAddTodo } from './AddTodo';
 import { inject } from 'ts-ioc-container';
 import { useOperation } from '../../../lib/components/Operation';
 import { IRequestContext } from '../../../lib/components/RequestContext';
 import { Response } from '../../../lib/express/Response';
+import { AddTodo } from './AddTodo';
 
 export class AddTodoHTTPRoute implements AddTodoRoute {
   constructor(
-    @inject(useOperation(AddTodo)) private addTodo: IAddTodo,
+    @inject(useOperation(AddTodo)) private addTodo: AddTodo,
     @inject(IRequestContext.resolve) private context: IRequestContext,
   ) {}
 

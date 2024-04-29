@@ -1,19 +1,17 @@
+import { by, IContainer, inject } from 'ts-ioc-container';
+import { IAppQuery, IAuthQuery, WithAuthUser } from '../../IAppQuery';
+import { AdminHandler } from '../../AdminHandler';
 import { ITodo } from '../../../domains/todo/ITodo';
 import { IQueryHandler } from '../../../lib/mediator/IQueryHandler';
-import { by, IContainer, inject } from 'ts-ioc-container';
-import { ITodoRepo, ITodoRepoKey } from '../../../domains/todo/TodoRepo';
-import { IAppQuery, IAuthQuery, WithAuthUser } from '../../IAppQuery';
 import { EntityManager, entityManager } from '../../../lib/em/EntityManager';
-import { AdminHandler } from '../../AdminHandler';
+import { ITodoRepo, ITodoRepoKey } from '../../../domains/todo/TodoRepo';
 
 interface Query extends IAuthQuery {
   title: string;
   description: string;
 }
 
-export interface IAddTodo extends IQueryHandler<Query, () => ITodo> {}
-
-export class AddTodo extends AdminHandler<Query, () => ITodo> implements IAddTodo {
+export class AddTodo extends AdminHandler<Query, () => ITodo> implements IQueryHandler<Query, () => ITodo> {
   constructor(
     @inject(entityManager(ITodoRepoKey)) private em: EntityManager<ITodoRepo>,
     @inject(by.scope.current) scope: IContainer,
