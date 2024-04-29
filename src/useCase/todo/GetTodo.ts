@@ -1,8 +1,9 @@
 import { IQueryHandler } from '../../lib/mediator/IQueryHandler';
-import { IAppQuery, ITodoQuery } from '../middleware/IAppQuery';
+import { IAppQuery } from '../IAppQuery';
 import { ITodo } from '../../domains/todo/ITodo';
-import { MainHandler } from './MainHandler';
+import { MainHandler } from '../MainHandler';
 import { by, IContainer, inject } from 'ts-ioc-container';
+import { ITodoQuery } from './ITodoQuery';
 
 interface Query extends ITodoQuery {}
 

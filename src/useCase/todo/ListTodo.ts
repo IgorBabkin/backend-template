@@ -3,9 +3,9 @@ import { ITodoRepo, ITodoRepoKey } from '../../domains/todo/TodoRepo';
 import { by, IContainer, inject } from 'ts-ioc-container';
 import { request } from '../../lib/components/Operation';
 import * as console from 'node:console';
-import { IAppQuery } from '../middleware/IAppQuery';
+import { IAppQuery } from '../IAppQuery';
 import { ITodo } from '../../domains/todo/ITodo';
-import { MainHandler } from './MainHandler';
+import { MainHandler } from '../MainHandler';
 
 interface Query {}
 

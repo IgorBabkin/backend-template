@@ -1,9 +1,10 @@
-import { IAppQuery, IAuthQuery, isTodoQuery, WithAuthUser } from '../middleware/IAppQuery';
-import { IAuthenticator, IAuthenticatorKey } from './IAuthenticator';
-import { entityManager, EntityManager } from '../../lib/em/EntityManager';
-import { ITodoRepo, ITodoRepoKey } from '../../domains/todo/TodoRepo';
+import { IAppQuery, IAuthQuery, WithAuthUser } from './IAppQuery';
+import { IAuthenticator, IAuthenticatorKey } from '../domains/auth/IAuthenticator';
+import { entityManager, EntityManager } from '../lib/em/EntityManager';
+import { ITodoRepo, ITodoRepoKey } from '../domains/todo/TodoRepo';
 import { IContainer } from 'ts-ioc-container';
-import { omitUndefined } from '../../lib/utils';
+import { omitUndefined } from '../lib/utils';
+import { isTodoQuery } from './todo/ITodoQuery';
 
 export abstract class AdminHandler<TQuery extends IAuthQuery, TResponse> {
   private authenticator: IAuthenticator;

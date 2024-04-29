@@ -1,7 +1,8 @@
 import { IQueryHandler } from '../../lib/mediator/IQueryHandler';
-import { IAppQuery, IAuthQuery, ITodoQuery, WithAuthUser } from '../middleware/IAppQuery';
-import { AdminHandler } from './AdminHandler';
+import { IAppQuery, IAuthQuery, WithAuthUser } from '../IAppQuery';
+import { AdminHandler } from '../AdminHandler';
 import { by, IContainer, inject } from 'ts-ioc-container';
+import { ITodoQuery } from './ITodoQuery';
 
 interface Query extends ITodoQuery, IAuthQuery {}
 

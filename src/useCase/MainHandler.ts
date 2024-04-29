@@ -1,8 +1,9 @@
-import { IAppQuery, isTodoQuery } from '../middleware/IAppQuery';
-import { entityManager, EntityManager } from '../../lib/em/EntityManager';
-import { ITodoRepo, ITodoRepoKey } from '../../domains/todo/TodoRepo';
+import { IAppQuery } from './IAppQuery';
+import { entityManager, EntityManager } from '../lib/em/EntityManager';
+import { ITodoRepo, ITodoRepoKey } from '../domains/todo/TodoRepo';
 import { IContainer } from 'ts-ioc-container';
-import { omitUndefined } from '../../lib/utils';
+import { omitUndefined } from '../lib/utils';
+import { isTodoQuery } from './todo/ITodoQuery';
 
 export abstract class MainHandler<TQuery extends NonNullable<unknown>, TResponse> {
   private todoRepoEntityManager: EntityManager<ITodoRepo>;
