@@ -22,7 +22,7 @@
     "generate:client": "openapi-to-client --input src/swagger.yaml --output src/.generated/client.ts",
     "generate:validators": "openapi-to-zod --input src/swagger.yaml --output src/.generated/validators.ts",
     "generate:format": "prettier --write \"src/.generated/**/*.{js,ts}\" --no-error-on-unmatched-pattern",
-    "build:package": "rimraf esm && tsc -p tsconfig.client.json --outDir esm",
+    "prepack": "rimraf esm && tsc -p tsconfig.client.json --outDir esm",
     "postinstall": "husky install"
   },
   "config": {
@@ -36,6 +36,9 @@
   "files": [
     "esm/**/*"
   ],
+  "module": "esm/client.js",
+  "main": "esm/client.js",
+  "types": "esm/client.d.ts",
   "lint-staged": {
     "*.{js,ts}": [
       "eslint --cache --fix",
