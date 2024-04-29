@@ -1,10 +1,10 @@
-import { ITodo } from '../../domains/todo/ITodo';
-import { IQueryHandler } from '../../lib/mediator/IQueryHandler';
+import { ITodo } from '../../../domains/todo/ITodo';
+import { IQueryHandler } from '../../../lib/mediator/IQueryHandler';
 import { by, IContainer, inject } from 'ts-ioc-container';
-import { ITodoRepo, ITodoRepoKey } from '../../domains/todo/TodoRepo';
-import { IAppQuery, IAuthQuery, WithAuthUser } from '../IAppQuery';
-import { EntityManager, entityManager } from '../../lib/em/EntityManager';
-import { AdminHandler } from '../AdminHandler';
+import { ITodoRepo, ITodoRepoKey } from '../../../domains/todo/TodoRepo';
+import { IAppQuery, IAuthQuery, WithAuthUser } from '../../IAppQuery';
+import { EntityManager, entityManager } from '../../../lib/em/EntityManager';
+import { AdminHandler } from '../../AdminHandler';
 
 interface Query extends IAuthQuery {
   title: string;

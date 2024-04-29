@@ -1,9 +1,9 @@
-import { ITodo } from '../../domains/todo/ITodo';
-import { IQueryHandler } from '../../lib/mediator/IQueryHandler';
-import { IAppQuery, IAuthQuery, WithAuthUser } from '../IAppQuery';
-import { AdminHandler } from '../AdminHandler';
+import { ITodo } from '../../../domains/todo/ITodo';
+import { IQueryHandler } from '../../../lib/mediator/IQueryHandler';
+import { IAppQuery, IAuthQuery, WithAuthUser } from '../../IAppQuery';
+import { AdminHandler } from '../../AdminHandler';
 import { by, IContainer, inject } from 'ts-ioc-container';
-import { ITodoQuery } from './ITodoQuery';
+import { ITodoQuery } from '../ITodoQuery';
 
 interface Query extends ITodoQuery, IAuthQuery {
   title?: string;

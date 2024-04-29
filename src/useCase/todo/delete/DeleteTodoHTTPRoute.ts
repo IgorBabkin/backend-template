@@ -1,8 +1,8 @@
 import { inject } from 'ts-ioc-container';
-import { useOperation } from '../../lib/components/Operation';
-import { DeleteTodoPayload, DeleteTodoResponse, DeleteTodoRoute } from '.generated/operations';
+import { useOperation } from '../../../lib/components/Operation';
+import { DeleteTodoPayload, DeleteTodoResponse, DeleteTodoRoute } from '../../../.generated/operations';
 import { DeleteTodo, IDeleteTodo } from './DeleteTodo';
-import { Response } from '../../lib/express/Response';
+import { Response } from '../../../lib/express/Response';
 
 export class DeleteTodoHTTPRoute implements DeleteTodoRoute {
   constructor(@inject(useOperation(DeleteTodo)) private deleteTodo: IDeleteTodo) {}
