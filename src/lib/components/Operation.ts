@@ -3,16 +3,18 @@ import { TransactionMediator } from '../mediator/transaction/TransactionMediator
 import { SimpleMediator } from '../mediator/SimpleMediator';
 import { IMediator } from '../mediator/IMediator';
 import { getProp, prop } from '../metadata';
-import { IMiddleware, IQueryHandler, useMiddleware } from '../mediator/IQueryHandler';
+import { IMiddleware, IQueryHandler, isMiddleware, middlewareMemo } from '../mediator/IQueryHandler';
 import { Middleware } from './Middleware';
 
-export class Operation<TQuery, TResponse> implements IQueryHandler<TQuery, TResponse> {
+class Operation<TQuery, TResponse> implements IQueryHandler<TQuery, TResponse> {
   private mediator: IMediator;
 
   constructor(
     private fn: () => IQueryHandler<TQuery, TResponse>,
-    @inject(useMiddleware(['middleware-before'], ['common'])) private beforeMiddleware: IMiddleware[],
-    @inject(useMiddleware(['middleware-after'], ['common'])) private afterMiddleware: IMiddleware[],
+    @inject(by.aliases(isMiddleware('middleware-before'), middlewareMemo('middleware-before')))
+    private beforeMiddleware: IMiddleware[],
+    @inject(by.aliases(isMiddleware('middleware-after'), middlewareMemo('middleware-after')))
+    private afterMiddleware: IMiddleware[],
     @inject(by.scope.current) private requestScope: IContainer,
   ) {
     this.mediator = new TransactionMediator(new SimpleMediator(), requestScope);

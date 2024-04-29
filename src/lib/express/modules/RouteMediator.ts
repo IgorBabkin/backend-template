@@ -2,7 +2,7 @@ import { IContainer, Provider } from 'ts-ioc-container';
 import { HttpResponse, Route, RouteOptions } from '@ibabkin/openapi-to-server';
 import { ZodType } from 'zod';
 import { Scope } from '../../components/Scope';
-import { AppRequestContext, IRequestContext } from '../../components/RequestContext';
+import { AppRequestContext, IRequestContext, IRequestContextKey } from '../../components/RequestContext';
 
 export class RouteMediator {
   private routes = new Map<string, string>();
@@ -25,7 +25,7 @@ export class RouteMediator {
   ) {
     const requestScope = this.appScope.createScope(Scope.Request);
     requestScope.register(
-      IRequestContext.key,
+      IRequestContextKey.key,
       Provider.fromValue<IRequestContext>(new AppRequestContext(this.routes, options.tags, options.baseURI)),
     );
     try {

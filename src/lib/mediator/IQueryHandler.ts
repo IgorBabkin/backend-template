@@ -1,6 +1,5 @@
 import { IContainer } from 'ts-ioc-container';
-import { IRequestContext } from '../components/RequestContext';
-import { byAliasesMemoized } from '../container/Memo';
+import { IRequestContextKey } from '../components/RequestContext';
 
 export interface IQueryHandler<TQuery = unknown, TResponse = unknown> {
   handle(query: TQuery): Promise<TResponse>;
@@ -13,11 +12,15 @@ export type MiddlewarePayload = {
 };
 export type IMiddleware = IQueryHandler<MiddlewarePayload, void>;
 
-export const useMiddleware = (requiredTags: string[], optional: string[]) => (s: IContainer) => {
-  const requestTags = IRequestContext.resolve(s).tags;
-  const optionalTags = requestTags.concat(optional);
-  return byAliasesMemoized(
-    (p) => requiredTags.every((t) => p.has(t)) && optionalTags.some((t) => p.has(t)),
-    `${requiredTags.join(',')}/${optionalTags.join(',')}`,
-  )(s);
-};
+export const isMiddleware =
+  (...requiredTags: string[]) =>
+  (as: Set<string>, c: IContainer) =>
+    requiredTags.every((alias) => as.has(alias)) &&
+    IRequestContextKey.resolve(c)
+      .tags.concat(['common'])
+      .some((tag) => as.has(tag));
+
+export const middlewareMemo =
+  (...requiredTags: string[]) =>
+  (c: IContainer) =>
+    `${requiredTags.join(',')}/${IRequestContextKey.resolve(c).tags.join(',')}`;

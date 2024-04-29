@@ -5,7 +5,7 @@ export interface IRequestContext extends RequestContext {
   tags: string[];
 }
 
-export const IRequestContext = accessor<IRequestContext>(Symbol('IRequestContext'));
+export const IRequestContextKey = accessor<IRequestContext>(Symbol('IRequestContext'));
 
 export class AppRequestContext implements IRequestContext {
   constructor(private routes: Map<string, string>, public tags: string[], private getBaseURI: () => string) {}
