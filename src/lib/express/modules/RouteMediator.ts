@@ -21,7 +21,7 @@ export class RouteMediator {
     operation: (scope: IContainer) => Route<unknown, HttpResponse>,
     payloadValidator: ZodType,
     data: unknown,
-    options: RouteOptions & { baseURI: string },
+    options: RouteOptions & { baseURI: () => string },
   ) {
     const requestScope = this.appScope.createScope(Scope.Request);
     requestScope.register(
