@@ -122,6 +122,10 @@
     responses:
       "201":
         description: item created
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Todo'
         headers:
           Location:
             description: The URL of the created item
