@@ -1,8 +1,8 @@
 import { alias, by, IContainer, inject, IProvider, provider, ProviderDecorator } from 'ts-ioc-container';
-import { IMiddleware, MiddlewarePayload } from './IQueryHandler';
-import { TransactionMediator } from './transaction/TransactionMediator';
-import { SimpleMediator } from './SimpleMediator';
-import { IMediator } from './IMediator';
+import { IMiddleware, MiddlewarePayload } from '../mediator/IQueryHandler';
+import { TransactionMediator } from '../mediator/transaction/TransactionMediator';
+import { SimpleMediator } from '../mediator/SimpleMediator';
+import { IMediator } from '../mediator/IMediator';
 
 export class Middleware implements IMiddleware {
   private mediator: IMediator;

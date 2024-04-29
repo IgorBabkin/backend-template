@@ -1,7 +1,7 @@
 import { IMiddleware, IQueryHandler } from '../../lib/mediator/IQueryHandler';
 import { ITodoRepo, ITodoRepoKey } from '../../domains/todo/TodoRepo';
 import { by, IContainer, inject } from 'ts-ioc-container';
-import { request } from '../../lib/mediator/OperationProvider';
+import { request } from '../../lib/components/Operation';
 import * as console from 'node:console';
 import { IAppQuery } from '../middleware/IAppQuery';
 import { ITodo } from '../../domains/todo/ITodo';

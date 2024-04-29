@@ -13,7 +13,7 @@ import { DomainErrorHandler } from './lib/express/errorHandler/DomainErrorHandle
 import { OpenAPIRoutes } from './lib/express/modules/OpenAPIRoutes';
 import { RequestLogger } from './lib/express/modules/RequestLogger';
 import { DisposeInstances } from './useCase/middleware/DisposeInstances';
-import { Scope } from './lib/mediator/Scope';
+import { Scope } from './lib/components/Scope';
 import { RouteMediator } from './lib/express/modules/RouteMediator';
 
 const env = ProcessEnv.parse(process.env);

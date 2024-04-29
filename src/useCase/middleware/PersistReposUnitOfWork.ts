@@ -1,8 +1,8 @@
 import { by, inject, register, scope } from 'ts-ioc-container';
 import { EntityManager, isEntityManager } from '../../lib/em/EntityManager';
 import { transaction } from '../../lib/mediator/transaction/ITransactionContext';
-import { perScope } from '../../lib/mediator/Scope';
-import { asMiddleware } from '../../lib/mediator/Middleware';
+import { perScope } from '../../lib/components/Scope';
+import { asMiddleware } from '../../lib/components/Middleware';
 
 @transaction
 @register(scope(perScope.Request))

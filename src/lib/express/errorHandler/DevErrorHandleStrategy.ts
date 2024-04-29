@@ -3,7 +3,7 @@ import { Response } from 'express';
 import { DomainError } from '../../../domains/errors/DomainError';
 import { IExpressErrorHandlerStrategy, IExpressErrorHandlerStrategyKey, Payload } from './DomainErrorHandler';
 import { inject, key, provider, register, scope, singleton } from 'ts-ioc-container';
-import { perScope } from '../../mediator/Scope';
+import { perScope } from '../../components/Scope';
 
 @register(key(IExpressErrorHandlerStrategyKey), scope(perScope.Application))
 @provider(singleton())

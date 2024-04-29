@@ -1,8 +1,8 @@
 import { by, IContainer, inject, IProvider, ProviderDecorator } from 'ts-ioc-container';
-import { TransactionMediator } from './transaction/TransactionMediator';
-import { SimpleMediator } from './SimpleMediator';
-import { IMediator } from './IMediator';
-import { IQueryHandler } from './IQueryHandler';
+import { TransactionMediator } from '../mediator/transaction/TransactionMediator';
+import { SimpleMediator } from '../mediator/SimpleMediator';
+import { IMediator } from '../mediator/IMediator';
+import { IQueryHandler } from '../mediator/IQueryHandler';
 
 export class Service<TQuery = unknown, TResponse = unknown> implements IQueryHandler<TQuery, TResponse> {
   private mediator: IMediator;

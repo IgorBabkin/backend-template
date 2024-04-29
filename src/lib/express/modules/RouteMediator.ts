@@ -1,8 +1,8 @@
 import { IContainer, Provider } from 'ts-ioc-container';
 import { HttpResponse, Route, RouteOptions } from '@ibabkin/openapi-to-server';
 import { ZodType } from 'zod';
-import { Scope } from '../../mediator/Scope';
-import { AppRequestContext, IRequestContext } from '../../mediator/RequestContext';
+import { Scope } from '../../components/Scope';
+import { AppRequestContext, IRequestContext } from '../../components/RequestContext';
 
 export class RouteMediator {
   private routes = new Map<string, string>();

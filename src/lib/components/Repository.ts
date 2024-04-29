@@ -1,6 +1,6 @@
 import { IContainer, IProvider, ProviderDecorator } from 'ts-ioc-container';
 import { IRepository } from '../em/IRepository';
-import { mapPrismaError } from './handlePrismaError';
+import { mapPrismaError } from '../prisma/handlePrismaError';
 
 export class RepositoryProvider extends ProviderDecorator<IRepository> {
   constructor(private provider: IProvider<IRepository>) {

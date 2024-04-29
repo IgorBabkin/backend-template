@@ -1,5 +1,5 @@
 import { inject } from 'ts-ioc-container';
-import { useOperation } from '../../lib/mediator/OperationProvider';
+import { useOperation } from '../../lib/components/Operation';
 import { DeleteTodoPayload, DeleteTodoResponse, DeleteTodoRoute } from '.generated/operations';
 import { DeleteTodo, IDeleteTodo } from './DeleteTodo';
 import { Response } from '../../lib/express/Response';

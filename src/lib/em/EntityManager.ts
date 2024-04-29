@@ -11,7 +11,7 @@ import {
   scope,
   singleton,
 } from 'ts-ioc-container';
-import { perScope } from '../mediator/Scope';
+import { perScope } from '../components/Scope';
 
 export const IEntityKey = Symbol('IEntity');
 

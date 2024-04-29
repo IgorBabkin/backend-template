@@ -3,8 +3,8 @@ import { ITodo, ITodoValue } from './ITodo';
 import { prismaClient } from '../../lib/prisma/PrismaTransactionContext';
 import { inject, key, provider, register, scope, singleton } from 'ts-ioc-container';
 import { IRepository } from '../../lib/em/IRepository';
-import { perScope } from '../../lib/mediator/Scope';
-import { repository } from '../../lib/prisma/RepositoryProvider';
+import { perScope } from '../../lib/components/Scope';
+import { repository } from '../../lib/components/Repository';
 
 export interface ITodoRepo extends IRepository<ITodo, ITodoValue> {
   findAll(): Promise<ITodo[]>;
