@@ -1,14 +1,14 @@
 import { IContainer, IProvider, ProviderDecorator } from 'ts-ioc-container';
 import { IRepository } from '../em/IRepository';
 import { mapPrismaError } from '../prisma/handlePrismaError';
-import { ProviderResolveOptions } from 'ts-ioc-container/typings/provider/IProvider';
+import { InstantDependencyOptions } from 'ts-ioc-container/typings/provider/IProvider';
 
 export class RepositoryProvider extends ProviderDecorator<IRepository> {
   constructor(private provider: IProvider<IRepository>) {
     super(provider);
   }
 
-  resolveInstantly(container: IContainer, options: ProviderResolveOptions): IRepository {
+  resolveInstantly(container: IContainer, options: InstantDependencyOptions): IRepository {
     const instance = this.provider.resolve(container, options);
     return new Proxy(instance, {
       get(target, prop, receiver) {
