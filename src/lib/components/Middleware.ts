@@ -1,4 +1,4 @@
-import { alias, by, decorate, IContainer, inject, lazy, provider } from 'ts-ioc-container';
+import { alias, by, constructor, decorate, IContainer, inject, provider } from 'ts-ioc-container';
 import { IMiddleware, MiddlewarePayload } from '../mediator/IQueryHandler';
 import { TransactionMediator } from '../mediator/transaction/TransactionMediator';
 import { SimpleMediator } from '../mediator/SimpleMediator';
@@ -19,6 +19,8 @@ export class Middleware implements IMiddleware {
 export const asMiddleware = (...aliases: string[]) =>
   provider(
     decorate((dep, s) => s.resolve(Middleware, { args: [dep] })),
-    lazy,
     alias(...aliases),
   );
+
+export const resolveMiddleware = (scope: IContainer, Target: constructor<IMiddleware>, options: { lazy?: boolean }) =>
+  scope.resolve(Middleware, { args: [by.key(Target, options)(scope)] });

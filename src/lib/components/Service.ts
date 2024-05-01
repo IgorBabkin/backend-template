@@ -3,6 +3,7 @@ import { TransactionMediator } from '../mediator/transaction/TransactionMediator
 import { SimpleMediator } from '../mediator/SimpleMediator';
 import { IMediator } from '../mediator/IMediator';
 import { IQueryHandler } from '../mediator/IQueryHandler';
+import { ProviderResolveOptions } from 'ts-ioc-container/typings/provider/IProvider';
 
 export class Service<TQuery = unknown, TResponse = unknown> implements IQueryHandler<TQuery, TResponse> {
   private mediator: IMediator;
@@ -22,8 +23,8 @@ export class ServiceProvider extends ProviderDecorator<IQueryHandler> {
     super(provider);
   }
 
-  resolve(requestScope: IContainer, ...args: unknown[]): IQueryHandler {
-    return requestScope.resolve(Service, { args: [() => this.provider.resolve(requestScope, ...args)] });
+  resolve(requestScope: IContainer, options: ProviderResolveOptions): IQueryHandler {
+    return requestScope.resolve(Service, { args: [() => this.provider.resolve(requestScope, options)] });
   }
 }
 

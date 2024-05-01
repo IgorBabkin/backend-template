@@ -1,14 +1,15 @@
 import { IContainer, IProvider, ProviderDecorator } from 'ts-ioc-container';
 import { IRepository } from '../em/IRepository';
 import { mapPrismaError } from '../prisma/handlePrismaError';
+import { ProviderResolveOptions } from 'ts-ioc-container/typings/provider/IProvider';
 
 export class RepositoryProvider extends ProviderDecorator<IRepository> {
   constructor(private provider: IProvider<IRepository>) {
     super(provider);
   }
 
-  resolve(container: IContainer, ...args: unknown[]): IRepository {
-    const instance = this.provider.resolve(container, ...args);
+  resolveInstantly(container: IContainer, options: ProviderResolveOptions): IRepository {
+    const instance = this.provider.resolve(container, options);
     return new Proxy(instance, {
       get(target, prop, receiver) {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
