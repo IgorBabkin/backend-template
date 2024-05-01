@@ -11,11 +11,10 @@ export class AddTodoHTTPRoute implements AddTodoRoute {
     @inject(IRequestContextKey.resolve) private context: IRequestContext,
   ) {}
 
-  async handle({ body, headers }: AddTodoPayload): Promise<AddTodoResponse> {
+  async handle({ body }: AddTodoPayload): Promise<AddTodoResponse> {
     const todo = await this.addTodo.handle({
       title: body.title,
       description: body.description,
-      authToken: headers.Authorization,
     });
     return Response.Redirect({ to: this.context.getUrl('getTodo', { params: { id: todo().id } }) });
   }

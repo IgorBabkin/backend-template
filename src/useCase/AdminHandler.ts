@@ -19,7 +19,7 @@ export abstract class AdminHandler<TQuery extends IAuthQuery, TResponse> {
     return this.process(
       omitUndefined({
         ...query,
-        authUserID: await this.authenticator.getUser(query.authToken),
+        // authUserID: await this.authenticator.getUser(query.authToken),
         todo: isTodoQuery(query) ? await this.todoRepoEntityManager.findByIdOrFail(query.todoID) : undefined,
       }) as unknown as WithAuthUser<IAppQuery<TQuery>>,
     );

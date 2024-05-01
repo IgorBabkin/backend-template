@@ -44,9 +44,7 @@ class Operation<TQuery, TResponse> implements IQueryHandler<TQuery, TResponse> {
         UseCase.constructor as constructor<unknown>,
         createHookMetadataKey('RequestMediator/', 'after'),
       ) ?? [];
-    return items.map((item) =>
-      this.requestScope.resolve(Middleware, { args: [() => this.requestScope.resolve(item)] }),
-    );
+    return items.map((item) => this.requestScope.resolve(Middleware, { args: [by.lazy.key(item)(this.requestScope)] }));
   }
 
   private getBeforeHooks<TQuery, TResponse>(UseCase: IQueryHandler<TQuery, TResponse>): IMiddleware[] {
@@ -55,9 +53,7 @@ class Operation<TQuery, TResponse> implements IQueryHandler<TQuery, TResponse> {
         UseCase.constructor as constructor<unknown>,
         createHookMetadataKey('RequestMediator/', 'before'),
       ) ?? [];
-    return items.map((item) =>
-      this.requestScope.resolve(Middleware, { args: [() => this.requestScope.resolve(item)] }),
-    );
+    return items.map((item) => this.requestScope.resolve(Middleware, { args: [by.lazy.key(item)(this.requestScope)] }));
   }
 }
 
