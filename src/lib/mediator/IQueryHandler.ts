@@ -7,8 +7,6 @@ export interface IQueryHandler<TQuery = unknown, TResponse = unknown> {
 
 export type MiddlewarePayload = {
   resource: unknown;
-  query: unknown;
-  result: unknown;
 };
 export type IMiddleware = IQueryHandler<MiddlewarePayload, void>;
 

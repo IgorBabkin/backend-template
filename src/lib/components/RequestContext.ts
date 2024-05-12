@@ -3,6 +3,7 @@ import { RequestContext, RoutesPayloads } from '../../.generated/operations';
 
 export interface IRequestContext extends RequestContext {
   tags: string[];
+  payload: unknown;
 }
 
 export const IRequestContextKey = accessor<IRequestContext>(Symbol('IRequestContext'));
@@ -10,7 +11,11 @@ export const IRequestContextKey = accessor<IRequestContext>(Symbol('IRequestCont
 export class AppRequestContext implements IRequestContext {
   tags: string[];
 
-  constructor(private routes: Map<string, string>, public options: { tags: string[]; getBaseURI: () => string }) {
+  constructor(
+    private routes: Map<string, string>,
+    public payload: unknown,
+    public options: { tags: string[]; getBaseURI: () => string },
+  ) {
     this.tags = options.tags;
   }
 

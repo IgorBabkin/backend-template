@@ -23,7 +23,7 @@ export class ServiceProvider extends ProviderDecorator<IQueryHandler> {
     super(provider);
   }
 
-  resolve(requestScope: IContainer, options: ProviderResolveOptions): IQueryHandler {
+  resolveInstantly(requestScope: IContainer, options: ProviderResolveOptions): IQueryHandler {
     return requestScope.resolve(Service, { args: [() => this.provider.resolve(requestScope, options)] });
   }
 }

@@ -1,4 +1,4 @@
-import { by, constructor, IContainer, inject, InjectionToken } from 'ts-ioc-container';
+import { by, byAliases, constructor, IContainer, inject, InjectionToken } from 'ts-ioc-container';
 import { TransactionMediator } from '../mediator/transaction/TransactionMediator';
 import { SimpleMediator } from '../mediator/SimpleMediator';
 import { IMediator } from '../mediator/IMediator';
@@ -10,10 +10,10 @@ class Operation<TQuery, TResponse> implements IQueryHandler<TQuery, TResponse> {
   private mediator: IMediator;
 
   constructor(
-    private fn: () => IQueryHandler<TQuery, TResponse>,
-    @inject(by.aliases(isMiddleware('middleware-before'), { memoize: middlewareMemo('middleware-before'), lazy: true }))
+    private handler: IQueryHandler<TQuery, TResponse>,
+    @inject(byAliases(isMiddleware('middleware-before'), { memoize: middlewareMemo('middleware-before'), lazy: true }))
     private beforeMiddleware: IMiddleware[],
-    @inject(by.aliases(isMiddleware('middleware-after'), { memoize: middlewareMemo('middleware-after'), lazy: true }))
+    @inject(byAliases(isMiddleware('middleware-after'), { memoize: middlewareMemo('middleware-after'), lazy: true }))
     private afterMiddleware: IMiddleware[],
     @inject(by.scope.current) private requestScope: IContainer,
   ) {
@@ -21,18 +21,16 @@ class Operation<TQuery, TResponse> implements IQueryHandler<TQuery, TResponse> {
   }
 
   async handle(query: TQuery): Promise<TResponse> {
-    const handler = this.fn();
-
-    const beforeHooks = this.beforeMiddleware.concat(this.getBeforeHooks(handler));
+    const beforeHooks = this.beforeMiddleware.concat(this.getBeforeHooks(this.handler));
     for (const middleware of beforeHooks) {
-      await middleware.handle({ query, resource: handler, result: undefined });
+      await middleware.handle({ resource: this.handler });
     }
 
-    const result = await this.mediator.send(handler, query);
+    const result = await this.mediator.send(this.handler, query);
 
-    const afterHooks = this.afterMiddleware.concat(this.getAfterHooks(handler));
+    const afterHooks = this.afterMiddleware.concat(this.getAfterHooks(this.handler));
     for (const middleware of afterHooks) {
-      await middleware.handle({ query, resource: handler, result });
+      await middleware.handle({ resource: this.handler });
     }
 
     return result;
@@ -66,4 +64,4 @@ export function request(key: 'before' | 'after', value: constructor<IMiddleware>
 export const useOperation =
   <T extends IQueryHandler>(Target: InjectionToken<T>) =>
   (requestScope: IContainer) =>
-    requestScope.resolve(Operation, { args: [() => requestScope.resolve(Target)] });
+    requestScope.resolve(Operation, { args: [requestScope.resolve(Target)] });

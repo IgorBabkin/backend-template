@@ -17,8 +17,8 @@ export class RouteMediator {
     this.routes.set(operationId, path);
   }
 
-  private createContext(options: { tags: string[]; getBaseURI: () => string }) {
-    return new AppRequestContext(this.routes, options);
+  private createContext(options: { tags: string[]; getBaseURI: () => string; payload: unknown }) {
+    return new AppRequestContext(this.routes, options.payload, options);
   }
 
   async handleRequest(
@@ -28,7 +28,10 @@ export class RouteMediator {
     options: RouteOptions & { getBaseURI: () => string },
   ) {
     const requestScope = this.appScope.createScope(Scope.Request);
-    requestScope.register(IRequestContextKey.key, Provider.fromValue(this.createContext(options)));
+    requestScope.register(
+      IRequestContextKey.key,
+      Provider.fromValue(this.createContext({ ...options, payload: data })),
+    );
     try {
       return await operation(requestScope).handle(payloadValidator.parse(data));
     } finally {
