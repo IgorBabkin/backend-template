@@ -1,4 +1,4 @@
-export const Response = {
+export const HTTPResponse = {
   Redirect: ({ to }: { to: string }) => ({
     status: 302,
     headers: {

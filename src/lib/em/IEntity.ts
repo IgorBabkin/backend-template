@@ -1,7 +1,8 @@
 import { IRepository } from './IRepository';
 import { omitUndefined } from '../utils';
+import { Brand } from '../brand';
 
-export type ID = string;
+export type ID = Brand<string, 'ID'>;
 
 export interface IEntity {
   id: ID;
@@ -33,7 +34,7 @@ export class Entity<State extends IEntity = IEntity> {
     }
   }
 
-  map(fn: (state: State) => Partial<State>): void {
+  patch(fn: (state: State) => Partial<State>): void {
     this.hasChanged = true;
     this.changes = { ...this.changes, ...omitUndefined(fn(this.value)) };
   }

@@ -1,7 +1,7 @@
 import { ListTodoPayload, ListTodoResponse, ListTodoRoute } from '../../../.generated/operations';
 import { inject } from 'ts-ioc-container';
 import { useOperation } from '../../../lib/components/Operation';
-import { Response } from '../../../lib/express/Response';
+import { HTTPResponse } from '../../../lib/express/HTTPResponse';
 import { ListTodo } from './ListTodo';
 
 export class ListTodoHTTPRoute implements ListTodoRoute {
@@ -9,7 +9,7 @@ export class ListTodoHTTPRoute implements ListTodoRoute {
 
   // eslint-disable-next-line no-empty-pattern
   async handle({}: ListTodoPayload): Promise<ListTodoResponse> {
-    const response = await this.listTodo.handle({});
-    return Response.OK({ body: response });
+    const list = await this.listTodo.handle({});
+    return HTTPResponse.OK({ body: list });
   }
 }

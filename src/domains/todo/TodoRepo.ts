@@ -5,6 +5,7 @@ import { inject, key, provider, register, scope, singleton } from 'ts-ioc-contai
 import { IRepository } from '../../lib/em/IRepository';
 import { perScope } from '../../lib/components/Scope';
 import { repository } from '../../lib/components/Repository';
+import { ID } from '../../lib/em/IEntity';
 
 export interface ITodoRepo extends IRepository<ITodo, ITodoValue> {
   findAll(): Promise<ITodo[]>;
@@ -17,7 +18,7 @@ export const ITodoRepoKey = Symbol('ITodoRepo');
 export class TodoRepo implements ITodoRepo {
   static toDomain(record: Todo): ITodo {
     return {
-      id: record.id.toString(),
+      id: record.id.toString() as ID,
       title: record.title,
       description: record.description,
     };
