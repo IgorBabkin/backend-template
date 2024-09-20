@@ -1,18 +1,19 @@
 import { UpdateTodoPayload, UpdateTodoResponse, UpdateTodoRoute } from '../../../.generated/operations';
 import { inject } from 'ts-ioc-container';
 import { useOperation } from '../../../lib/components/Operation';
-import { Response } from '../../../lib/express/Response';
+import { HTTPResponse } from '../../../lib/express/HTTPResponse';
 import { UpdateTodo } from './UpdateTodo';
+import { ID } from '../../../lib/em/IEntity';
 
 export class UpdateTodoHTTPRoute implements UpdateTodoRoute {
   constructor(@inject(useOperation(UpdateTodo)) private updateTodo: UpdateTodo) {}
 
   async handle({ body, params }: UpdateTodoPayload): Promise<UpdateTodoResponse> {
-    const response = await this.updateTodo.handle({
+    const todo = await this.updateTodo.handle({
       title: body.title,
       description: body.description,
-      todoID: params.id,
+      todoID: params.id as ID,
     });
-    return Response.OK({ body: response() });
+    return HTTPResponse.OK({ body: todo(º) });
   }
 }

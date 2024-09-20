@@ -16,7 +16,7 @@ export class UpdateTodo extends AdminHandler<Query, () => ITodo> implements IQue
   }
 
   protected async process({ todo, title, description }: WithAuthUser<IAppQuery<Query>>): Promise<() => ITodo> {
-    todo.map(() => ({ title, description }));
+    todo.patch(() => ({ title, description }));
     return () => todo.getState();
   }
 }
