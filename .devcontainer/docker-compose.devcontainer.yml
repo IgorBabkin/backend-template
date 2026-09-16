@@ -1,6 +1,6 @@
 services:
   app:
-    image: mcr.microsoft.com/devcontainers/typescript-node:1-18-bookworm
+    image: mcr.microsoft.com/devcontainers/typescript-node:26-bookworm
     command: sleep infinity
     working_dir: /workspace
     volumes:
