@@ -112,6 +112,8 @@ jobs:
         run: npm run db:migrate
       - name: Generate Prisma client
         run: npm run db:generate
+      - name: Generate OpenAPI artifacts
+        run: npm run generate:server && npm run generate:validators
       - name: Start application
         run: |
           nohup npm run start:dev > /tmp/backend-template.log 2>&1 </dev/null &
