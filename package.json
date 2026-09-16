@@ -17,7 +17,7 @@
     "lint:fix": "npm run lint --fix",
     "prepare": "husky install",
     "test": "jest",
-    "generate": "run-s generate:* generate:env",
+    "generate": "run-s generate:*",
     "generate:db": "npm run db:generate",
     "generate:server": "openapi-to-server --input src/swagger.yaml --output src/.generated/operations.d.ts --json",
     "generate:client": "openapi-to-client --input src/swagger.yaml --output src/.generated/client.ts",
