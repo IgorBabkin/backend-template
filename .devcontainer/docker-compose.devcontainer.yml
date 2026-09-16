@@ -1,0 +1,13 @@
+services:
+  app:
+    image: mcr.microsoft.com/devcontainers/typescript-node:1-18-bookworm
+    command: sleep infinity
+    working_dir: /workspace
+    volumes:
+      - ..:/workspace:cached
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/seenons?schema=public
+    depends_on:
+      - db
+    ports:
+      - '3000:3000'

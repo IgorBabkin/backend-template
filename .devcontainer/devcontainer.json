@@ -1,0 +1,15 @@
+{
+  "name": "backend-template",
+  "dockerComposeFile": ["../docker-compose.yml", "docker-compose.devcontainer.yml"],
+  "service": "app",
+  "workspaceFolder": "/workspace",
+  "shutdownAction": "stopCompose",
+  "forwardPorts": [3000, 5432],
+  "postCreateCommand": "npm ci --ignore-scripts && npm run generate",
+  "customizations": {
+    "vscode": {
+      "extensions": ["dbaeumer.vscode-eslint", "esbenp.prettier-vscode", "ms-azuretools.vscode-docker"]
+    }
+  },
+  "remoteUser": "node"
+}
