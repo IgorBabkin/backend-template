@@ -1,7 +1,7 @@
 import { Logger } from 'winston';
+import { arg, bindTo, inject, register } from 'ts-ioc-container';
 import { ILogger, ILoggerKey } from './ILogger';
 import { DomainError } from '../errors/DomainError';
-import { bindTo, register } from 'ts-ioc-container';
 
 interface SerializedError {
   errorName?: string;
@@ -11,7 +11,7 @@ interface SerializedError {
 
 @register(bindTo(ILoggerKey))
 export class WinstonLogger implements ILogger {
-  constructor(private logger: Logger, private meta: { topic: string }) {}
+  constructor(@inject(arg(1)) private logger: Logger, @inject(arg(0)) private meta: { topic: string }) {}
 
   info(message: string, meta: object = {}): void {
     this.logger.info(`${message}; meta: ${this.createMeta(meta)}`);

@@ -1,4 +1,4 @@
-import { constructor, IContainer, inject, select } from 'ts-ioc-container';
+import { arg, constructor, IContainer, inject, Is, select } from 'ts-ioc-container';
 import { TransactionMediator } from '../mediator/transaction/TransactionMediator';
 import { SimpleMediator } from '../mediator/SimpleMediator';
 import { IMediator } from '../mediator/IMediator';
@@ -17,12 +17,14 @@ export class Operation<Handler extends IQueryHandler<TQuery, TResponse>, TQuery 
   private readonly handler: Handler;
 
   constructor(
-    { handler }: OperationContext<Handler>,
+    @inject(arg(0)) context: OperationContext<Handler>,
     @inject(IMiddlewareBeforeKey.lazy()) private beforeMiddleware: IMiddleware[],
     @inject(IMiddlewareAfterKey.lazy()) private afterMiddleware: IMiddleware[],
     @inject(select.scope.current) private requestScope: IContainer,
   ) {
-    this.handler = handler;
+    this.handler = Is.constructor(context.handler)
+      ? requestScope.resolve(context.handler as constructor<Handler>)
+      : context.handler;
     this.mediator = new TransactionMediator(new SimpleMediator(), requestScope);
   }
 

@@ -5,6 +5,8 @@ import {
   bindTo,
   DependencyKey,
   IContainer,
+  inject,
+  arg,
   register,
   scope,
   singleton,
@@ -30,13 +32,14 @@ export class EntityManager<TRepo extends IRepository = IRepository> {
   private entities: Map<ID, Entity<GetEntityFromRepo<TRepo>>> = new Map();
 
   constructor(
-    private repo: TRepo,
-    private readonly createEntity: <V extends GetEntityFromRepo<TRepo>>(state: V) => Entity<V>,
+    @inject(arg(1)) private repo: TRepo,
+    private readonly createEntity: <V extends GetEntityFromRepo<TRepo>>(state: V) => Entity<V> = (state) =>
+      new Entity(state),
   ) {}
 
   async findByIdOrFail(id: ID): Promise<Entity<GetEntityFromRepo<TRepo>>> {
     if (!this.entities.has(id)) {
-      throw new Error('Entity not found');
+      return this.trackOne((r) => r.findByIdOrFail(id) as Promise<GetEntityFromRepo<TRepo>>);
     }
     return this.entities.get(id) as Entity<GetEntityFromRepo<TRepo>>;
   }
