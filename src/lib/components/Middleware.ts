@@ -1,4 +1,4 @@
-import { IContainer, inject, select } from 'ts-ioc-container';
+import { arg, IContainer, inject, select } from 'ts-ioc-container';
 import { IMiddleware, MiddlewarePayload } from '../mediator/IQueryHandler';
 import { TransactionMediator } from '../mediator/transaction/TransactionMediator';
 import { SimpleMediator } from '../mediator/SimpleMediator';
@@ -12,9 +12,9 @@ export class Middleware implements IMiddleware {
   private readonly mediator: IMediator;
   private readonly handler: IMiddleware;
 
-  constructor({ handler }: MiddlewareContext, @inject(select.scope.current) requestScope: IContainer) {
+  constructor(@inject(arg(0)) context: MiddlewareContext, @inject(select.scope.current) requestScope: IContainer) {
     this.mediator = new TransactionMediator(new SimpleMediator(), requestScope);
-    this.handler = handler;
+    this.handler = context.handler;
   }
 
   async handle(payload: MiddlewarePayload): Promise<void> {
@@ -22,4 +22,4 @@ export class Middleware implements IMiddleware {
   }
 }
 
-export const asMiddleware = (dep: unknown, s: IContainer) => s.resolve(Middleware, { args: [dep] });
+export const asMiddleware = (dep: unknown, s: IContainer) => s.resolve(Middleware, { args: [{ handler: dep }] });
