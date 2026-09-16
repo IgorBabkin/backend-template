@@ -1,4 +1,4 @@
-import { by, IContainer, inject } from 'ts-ioc-container';
+import { IContainer, inject, select } from 'ts-ioc-container';
 import { request } from '../../../lib/components/Operation';
 import { IMiddleware, IQueryHandler } from '../../../lib/mediator/IQueryHandler';
 import console from 'node:console';
@@ -24,7 +24,7 @@ export class LogAfter implements IMiddleware {
 @request('before', [LogBefore])
 @request('after', [LogAfter])
 export class ListTodo extends MainHandler<Query, ITodo[]> implements IQueryHandler<Query, ITodo[]> {
-  constructor(@inject(by.key(ITodoRepoKey)) private todoRepo: ITodoRepo, @inject(by.scope.current) scope: IContainer) {
+  constructor(@inject(ITodoRepoKey) private todoRepo: ITodoRepo, @inject(select.scope.current) scope: IContainer) {
     super(scope);
   }
 

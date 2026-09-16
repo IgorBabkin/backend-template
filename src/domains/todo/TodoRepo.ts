@@ -1,20 +1,19 @@
 import { PrismaClient, Todo } from '@prisma/client';
 import { ITodo, ITodoValue } from './ITodo';
 import { prismaClient } from '../../lib/prisma/PrismaTransactionContext';
-import { inject, key, provider, register, scope, singleton } from 'ts-ioc-container';
+import { bindTo, inject, register, scope, singleton, SingleToken } from 'ts-ioc-container';
 import { IRepository } from '../../lib/em/IRepository';
 import { perScope } from '../../lib/components/Scope';
 import { repository } from '../../lib/components/Repository';
-import { ID } from '../../lib/em/IEntity';
+import { ID } from '../../lib/em/Entity';
 
 export interface ITodoRepo extends IRepository<ITodo, ITodoValue> {
   findAll(): Promise<ITodo[]>;
 }
 
-export const ITodoRepoKey = Symbol('ITodoRepo');
+export const ITodoRepoKey = new SingleToken<ITodoRepo>('ITodoRepo');
 
-@register(key(ITodoRepoKey), scope(perScope.Request))
-@provider(repository, singleton())
+@register(bindTo(ITodoRepoKey), scope(perScope.Request), repository, singleton())
 export class TodoRepo implements ITodoRepo {
   static toDomain(record: Todo): ITodo {
     return {

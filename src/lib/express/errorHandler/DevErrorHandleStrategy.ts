@@ -1,14 +1,13 @@
-import { createLogger, ILogger } from '../../../domains/logger/ILogger';
+import { ILogger, ILoggerKey } from '../../../domains/logger/ILogger';
 import { Response } from 'express';
 import { DomainError } from '../../../domains/errors/DomainError';
 import { IExpressErrorHandlerStrategy, IExpressErrorHandlerStrategyKey, Payload } from './DomainErrorHandler';
-import { inject, key, provider, register, scope, singleton } from 'ts-ioc-container';
+import { bindTo, inject, register, scope, singleton } from 'ts-ioc-container';
 import { perScope } from '../../components/Scope';
 
-@register(key(IExpressErrorHandlerStrategyKey), scope(perScope.Application))
-@provider(singleton())
+@register(bindTo(IExpressErrorHandlerStrategyKey), scope(perScope.Application), singleton())
 export class DevErrorHandleStrategy implements IExpressErrorHandlerStrategy {
-  constructor(@inject(createLogger('DomainErrorHandler')) private logger: ILogger) {}
+  constructor(@inject(ILoggerKey.args({ topic: 'DomainErrorHandler' })) private logger: ILogger) {}
 
   sendHttpError(response: Response, { statusCode, error }: Payload): void {
     this.logger.logError(`StatusCode: ${statusCode}`, error);

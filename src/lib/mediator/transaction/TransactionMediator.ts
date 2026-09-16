@@ -12,10 +12,10 @@ export class TransactionMediator implements IMediator {
 
   async send<TResponse, TQuery>(handler: IQueryHandler<TQuery, TResponse>, query: TQuery): Promise<TResponse> {
     if (isTransaction(handler.constructor as constructor<unknown>)) {
-      const transactionScope = this.scope.createScope('transaction');
+      const transactionScope = this.scope.createScope({ tags: ['transaction'] });
       try {
         return await this.context.execute((childContext) => {
-          this.scope.register(ITransactionContextKey.key, Provider.fromValue(childContext));
+          this.scope.register(ITransactionContextKey.token, Provider.fromValue(childContext));
           return this.mediator.send(handler, query);
         });
       } finally {

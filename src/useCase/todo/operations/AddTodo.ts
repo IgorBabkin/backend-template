@@ -1,4 +1,4 @@
-import { by, IContainer, inject } from 'ts-ioc-container';
+import { IContainer, inject, select } from 'ts-ioc-container';
 import { IAppQuery, IAuthQuery, WithAuthUser } from '../../IAppQuery';
 import { AdminHandler } from '../../AdminHandler';
 import { ITodo } from '../../../domains/todo/ITodo';
@@ -14,13 +14,14 @@ interface Query extends IAuthQuery {
 export class AddTodo extends AdminHandler<Query, () => ITodo> implements IQueryHandler<Query, () => ITodo> {
   constructor(
     @inject(entityManager(ITodoRepoKey)) private em: EntityManager<ITodoRepo>,
-    @inject(by.scope.current) scope: IContainer,
+    @inject(select.scope.current) scope: IContainer,
   ) {
     super(scope);
   }
 
   async process(query: WithAuthUser<IAppQuery<Query>>): Promise<() => ITodo> {
     const todo = this.em.create({ title: query.title, description: query.description });
-    return () => todo.getResult();
+    const todoEntity = await this.em.persist(todo);
+    return () => todoEntity.getState();
   }
 }

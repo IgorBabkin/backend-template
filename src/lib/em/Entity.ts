@@ -8,7 +8,11 @@ export interface IEntity {
   id: ID;
 }
 
-export class Entity<State extends IEntity = IEntity> {
+interface Persistable<Entity extends IEntity = IEntity> {
+  persist(repo: IRepository): Promise<Entity>;
+}
+
+export class Entity<State extends IEntity = IEntity> implements Persistable<Entity<State>> {
   isDeleted = false;
   private hasChanged = false;
   private changes: Partial<State> = {};
@@ -23,15 +27,15 @@ export class Entity<State extends IEntity = IEntity> {
     return { ...this.value, ...this.changes };
   }
 
-  async persist(repo: IRepository<State, unknown>): Promise<void> {
+  async persist(repo: IRepository<State>): Promise<Entity<State>> {
     if (this.isDeleted) {
       await repo.delete(this.value.id);
-      return;
-    }
-    if (this.hasChanged) {
+    } else if (this.hasChanged) {
       this.value = await repo.update(this.value.id, this.changes);
-      this.hasChanged = false;
     }
+
+    this.hasChanged = false;
+    return this;
   }
 
   patch(fn: (state: State) => Partial<State>): void {
@@ -39,12 +43,12 @@ export class Entity<State extends IEntity = IEntity> {
     this.changes = { ...this.changes, ...omitUndefined(fn(this.value)) };
   }
 
-  delete() {
+  markAsDeleted() {
     this.isDeleted = true;
   }
 }
 
-export class Value<State, E extends IEntity> {
+export class Value<State, E extends IEntity> implements Persistable<Entity<E>> {
   entity?: Entity<E>;
 
   constructor(private value: State) {}

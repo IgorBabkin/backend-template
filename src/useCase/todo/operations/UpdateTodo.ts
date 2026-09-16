@@ -1,4 +1,4 @@
-import { by, IContainer, inject } from 'ts-ioc-container';
+import { IContainer, inject, select } from 'ts-ioc-container';
 import { AdminHandler } from '../../AdminHandler';
 import { ITodo } from '../../../domains/todo/ITodo';
 import { IQueryHandler } from '../../../lib/mediator/IQueryHandler';
@@ -11,7 +11,7 @@ interface Query extends ITodoQuery, IAuthQuery {
 }
 
 export class UpdateTodo extends AdminHandler<Query, () => ITodo> implements IQueryHandler<Query, () => ITodo> {
-  constructor(@inject(by.scope.current) scope: IContainer) {
+  constructor(@inject(select.scope.current) scope: IContainer) {
     super(scope);
   }
 

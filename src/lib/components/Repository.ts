@@ -1,22 +1,16 @@
-import { IContainer, IProvider, ProviderDecorator, ProviderResolveOptions } from 'ts-ioc-container';
+import { IProvider, IRegistration, Provider } from 'ts-ioc-container';
 import { IRepository } from '../em/IRepository';
 import { mapPrismaError } from '../prisma/handlePrismaError';
 
-export class RepositoryProvider extends ProviderDecorator<IRepository> {
-  constructor(private provider: IProvider<IRepository>) {
-    super(provider);
-  }
-
-  resolve(container: IContainer, options: ProviderResolveOptions): IRepository {
-    const instance = this.provider.resolve(container, options);
+const mapProvider = (provider: IProvider<IRepository>): IProvider<IRepository> =>
+  new Provider((container, options) => {
+    const instance = provider.resolve(container, options);
     return new Proxy(instance, {
-      get(target, prop, receiver) {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        const value = target[prop];
+      get(target, prop) {
+        const value = target[prop as keyof IRepository];
         if (value instanceof Function) {
           return function (...args: unknown[]) {
-            const result = value.apply(target, args);
+            const result = (value as (...args: unknown[]) => unknown).apply(target, args);
             if (result instanceof Promise) {
               return result.catch((e) =>
                 mapPrismaError(e, { method: prop.toString(), target: target.constructor.name }),
@@ -28,7 +22,8 @@ export class RepositoryProvider extends ProviderDecorator<IRepository> {
         return value;
       },
     });
-  }
-}
-
-export const repository = (provider: IProvider) => new RepositoryProvider(provider as IProvider<IRepository>);
+  });
+export const repository = {
+  mapRegistration: (r: IRegistration): IRegistration => r.pipe(mapProvider),
+  mapProvider,
+};

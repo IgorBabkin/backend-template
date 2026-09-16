@@ -1,9 +1,9 @@
-import { by, getHooks, hook, inject } from 'ts-ioc-container';
+import { getHooks, hook, inject, select } from 'ts-ioc-container';
 
-export const onDispose = hook('onDispose');
+export const onDispose = hook('onDispose', () => {});
 
 export class DisposeInstances {
-  constructor(@inject(by.instances()) private instances: unknown[]) {}
+  constructor(@inject(select.instances()) private instances: unknown[]) {}
 
   async handle(): Promise<void> {
     for (const instance of this.instances) {

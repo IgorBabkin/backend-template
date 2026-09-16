@@ -1,4 +1,4 @@
-import { args, IContainer, IContainerModule, Registration as R } from 'ts-ioc-container';
+import { appendArgs, IContainer, IContainerModule, Registration as R } from 'ts-ioc-container';
 import { IEnv } from '../env/IEnv';
 import { PrismaTransactionContext } from '../lib/prisma/PrismaTransactionContext';
 import { WinstonLogger } from '../domains/logger/WinstonLogger';
@@ -19,8 +19,8 @@ export class Production implements IContainerModule {
 
   applyTo(container: IContainer): void {
     container
-      .add(R.fromClass(PrismaTransactionContext).pipe(args(this.prismaClient)))
-      .add(R.fromClass(WinstonLogger).pipe(args(this.logger)))
-      .add(R.fromClass(ProdErrorHandleStrategy));
+      .addRegistration(R.fromClass(PrismaTransactionContext).pipe(appendArgs(this.prismaClient)))
+      .addRegistration(R.fromClass(WinstonLogger).pipe(appendArgs(this.logger)))
+      .addRegistration(R.fromClass(ProdErrorHandleStrategy));
   }
 }

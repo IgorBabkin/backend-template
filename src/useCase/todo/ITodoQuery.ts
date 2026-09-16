@@ -1,4 +1,4 @@
-import { Entity, ID } from '../../lib/em/IEntity';
+import { Entity, ID } from '../../lib/em/Entity';
 import { ITodo } from '../../domains/todo/ITodo';
 
 export interface ITodoQuery {

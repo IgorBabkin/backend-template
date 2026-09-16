@@ -1,15 +1,18 @@
 import { GetTodoPayload, GetTodoResponse, GetTodoRoute } from '../../../.generated/operations';
-import { inject } from 'ts-ioc-container';
-import { useOperation } from '../../../lib/components/Operation';
-import { HTTPResponse } from '../../../lib/express/HTTPResponse';
+import { inject, toToken } from 'ts-ioc-container';
+import { Operation } from '../../../lib/components/Operation';
+import { HTTPResponse, HTTPResponseKey } from '../../../lib/express/HTTPResponse';
 import { GetTodo } from './GetTodo';
-import { ID } from '../../../lib/em/IEntity';
+import { ID } from '../../../lib/em/Entity';
 
 export class GetTodoHTTPRoute implements GetTodoRoute {
-  constructor(@inject(useOperation(GetTodo)) private getTodo: GetTodo) {}
+  constructor(
+    @inject(toToken(Operation).args({ handler: GetTodo })) private getTodo: Operation<GetTodo>,
+    @inject(HTTPResponseKey) private response: HTTPResponse,
+  ) {}
 
   async handle({ params }: GetTodoPayload): Promise<GetTodoResponse> {
     const todo = await this.getTodo.handle({ todoID: params.id as ID });
-    return HTTPResponse.OK({ body: todo });
+    return this.response.ok({ body: todo });
   }
 }

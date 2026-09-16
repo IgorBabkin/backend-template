@@ -1,4 +1,4 @@
-import { ID, IEntity } from './IEntity';
+import { ID, IEntity } from './Entity';
 
 export interface IRepository<Entity extends IEntity = IEntity, Value = unknown> {
   delete(id: ID): Promise<void>;

@@ -1,5 +1,4 @@
-import { accessor } from '../../lib/container/di';
-import { provider, register, scope, singleton } from 'ts-ioc-container';
+import { bindTo, register, scope, singleton, SingleToken } from 'ts-ioc-container';
 import { perScope } from '../../lib/components/Scope';
 import { Brand } from '../../lib/brand';
 
@@ -9,10 +8,9 @@ export interface IAuthenticator {
   getUser(authToken: string): Promise<AuthUserID>;
 }
 
-export const IAuthenticatorKey = accessor<IAuthenticator>(Symbol('IAuthenticatorKey'));
+export const IAuthenticatorKey = new SingleToken<IAuthenticator>(Symbol('IAuthenticatorKey'));
 
-@register(IAuthenticatorKey.register, scope(perScope.Application))
-@provider(singleton())
+@register(bindTo(IAuthenticatorKey), scope(perScope.Application), singleton())
 export class Authenticator implements IAuthenticator {
   async getUser(authToken: string): Promise<AuthUserID> {
     return '123' as AuthUserID;
