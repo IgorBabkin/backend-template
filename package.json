@@ -11,6 +11,7 @@
     "db:generate": "prisma generate",
     "db:dev": "prisma migrate dev",
     "db:migrate": "prisma migrate deploy",
+    "env:prepare": "[ -f .env ] || cp .env.example .env",
     "format": "prettier --write \"src/**/*.{js,ts}\" --no-error-on-unmatched-pattern",
     "lint": "eslint \"src/**/*.{js,ts}\" --no-error-on-unmatched-pattern",
     "lint:fix": "npm run lint --fix",
