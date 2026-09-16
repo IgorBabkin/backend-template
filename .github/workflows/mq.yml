@@ -1,11 +1,13 @@
-name: Merge Queue Check
+name: Master Check
 
 on:
-  merge_group:
+  push:
+    branches:
+      - master
   workflow_dispatch:
 
 concurrency:
-  group: merge-queue-check-${{ github.workflow }}-${{ github.ref }}
+  group: master-check-${{ github.ref }}
   cancel-in-progress: true
 
 permissions:
