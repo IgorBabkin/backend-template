@@ -1,15 +1,18 @@
 import { DeleteTodoPayload, DeleteTodoResponse, DeleteTodoRoute } from '../../../.generated/operations';
-import { inject } from 'ts-ioc-container';
-import { useOperation } from '../../../lib/components/Operation';
-import { HTTPResponse } from '../../../lib/express/HTTPResponse';
+import { inject, toToken } from 'ts-ioc-container';
+import { Operation } from '../../../lib/components/Operation';
 import { DeleteTodo } from './DeleteTodo';
-import { ID } from '../../../lib/em/IEntity';
+import { ID } from '../../../lib/em/Entity';
+import { HTTPResponse, HTTPResponseKey } from '../../../lib/express/HTTPResponse';
 
 export class DeleteTodoHTTPRoute implements DeleteTodoRoute {
-  constructor(@inject(useOperation(DeleteTodo)) private deleteTodo: DeleteTodo) {}
+  constructor(
+    @inject(toToken(Operation).args({ handler: DeleteTodo })) private deleteTodo: Operation<DeleteTodo>,
+    @inject(HTTPResponseKey) private response: HTTPResponse,
+  ) {}
 
   async handle({ params }: DeleteTodoPayload): Promise<DeleteTodoResponse> {
     await this.deleteTodo.handle({ todoID: params.id as ID });
-    return HTTPResponse.NoContent();
+    return this.response.noContent();
   }
 }

@@ -1,12 +1,13 @@
-import { accessor } from '../container/di';
 import { RequestContext, RoutesPayloads } from '../../.generated/operations';
+import { SingleToken } from 'ts-ioc-container';
 
 export interface IRequestContext extends RequestContext {
   tags: string[];
   payload: unknown;
+  getUrl<Key extends keyof RoutesPayloads>(key: Key, payload: RoutesPayloads[Key]): string;
 }
 
-export const IRequestContextKey = accessor<IRequestContext>(Symbol('IRequestContext'));
+export const IRequestContextKey = new SingleToken<IRequestContext>(Symbol('IRequestContext'));
 
 export class AppRequestContext implements IRequestContext {
   tags: string[];

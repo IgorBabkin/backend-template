@@ -1,6 +1,5 @@
 import { getProp, prop } from '../../metadata';
-import { constructor } from 'ts-ioc-container';
-import { accessor } from '../../container/di';
+import { constructor, SingleToken } from 'ts-ioc-container';
 import { PrismaClient } from '@prisma/client';
 
 export interface ITransactionContext {
@@ -8,7 +7,7 @@ export interface ITransactionContext {
   execute: <Response>(fn: (context: ITransactionContext) => Promise<Response>) => Promise<Response>;
 }
 
-export const ITransactionContextKey = accessor<ITransactionContext>(Symbol('ITransactionContext'));
+export const ITransactionContextKey = new SingleToken<ITransactionContext>('ITransactionContext');
 
 export const transaction: ClassDecorator = prop('transaction', true);
 

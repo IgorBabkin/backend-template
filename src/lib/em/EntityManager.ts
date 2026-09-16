@@ -1,93 +1,98 @@
-import { Entity, ID, IEntity, Value } from './IEntity';
+import { Entity, ID, IEntity, Value } from './Entity';
 import { IRepository } from './IRepository';
 import {
-  argsFn,
+  appendArgsFn,
+  bindTo,
   DependencyKey,
   IContainer,
-  key,
-  MultiCache,
-  provider,
   register,
   scope,
   singleton,
+  SingleToken,
 } from 'ts-ioc-container';
 import { perScope } from '../components/Scope';
 
-export const IEntityKey = Symbol('IEntity');
+export const IEntityKey = new SingleToken('IEntity');
 
-const injectRepo = argsFn((s, ...args) => [s.resolve(args[0] as DependencyKey)]);
-const singletonByRepo = singleton(() => new MultiCache((...args) => args[0] as DependencyKey));
-export const entityManager = (repoKey: DependencyKey) => (s: IContainer) => s.resolve(IEntityKey, { args: [repoKey] });
+export const entityManager = (repoKey: SingleToken) => (s: IContainer) =>
+  s.resolve(IEntityKey.token, { args: [repoKey.token] });
 
-type RepoValue<IRepo> = IRepo extends IRepository<any, infer V> ? V : never;
-type RepoEntity<IRepo> = IRepo extends IRepository<infer E, any> ? E : never;
+type GetValueFromRepo<IRepo> = IRepo extends IRepository<any, infer V> ? V : never;
+type GetEntityFromRepo<IRepo> = IRepo extends IRepository<infer E, any> ? E : never;
 
-@register(key(IEntityKey), scope(perScope.Request))
-@provider(injectRepo, singletonByRepo)
+@register(
+  bindTo(IEntityKey.token),
+  scope(perScope.Request),
+  appendArgsFn((s, options) => [s.resolve((options?.args ?? [])[0] as DependencyKey)]),
+  singleton((...args) => args[0] as string | symbol),
+)
 export class EntityManager<TRepo extends IRepository = IRepository> {
-  private entities = new Map<ID, Entity>();
-  private values = new Set<Value<unknown, IEntity>>();
+  private entities: Map<ID, Entity<GetEntityFromRepo<TRepo>>> = new Map();
 
-  constructor(private repo: TRepo) {}
+  constructor(
+    private repo: TRepo,
+    private readonly createEntity: <V extends GetEntityFromRepo<TRepo>>(state: V) => Entity<V>,
+  ) {}
 
-  async findByIdOrFail(id: ID): Promise<Entity<RepoEntity<TRepo>>> {
-    return (this.entities.get(id) ?? this.trackEntity(new Entity(await this.repo.findByIdOrFail(id)))) as Entity<
-      RepoEntity<TRepo>
-    >;
+  async findByIdOrFail(id: ID): Promise<Entity<GetEntityFromRepo<TRepo>>> {
+    if (!this.entities.has(id)) {
+      throw new Error('Entity not found');
+    }
+    return this.entities.get(id) as Entity<GetEntityFromRepo<TRepo>>;
   }
 
-  create(newValue: RepoValue<TRepo>): Value<RepoValue<TRepo>, RepoEntity<TRepo>> {
-    const value = new Value<RepoValue<TRepo>, RepoEntity<TRepo>>(newValue);
-    this.values.add(value);
-    return value;
+  create(newValue: GetValueFromRepo<TRepo>): Value<GetValueFromRepo<TRepo>, GetEntityFromRepo<TRepo>> {
+    return new Value<GetValueFromRepo<TRepo>, GetEntityFromRepo<TRepo>>(newValue);
   }
 
   async persistAll() {
     for (const entity of this.entities.values()) {
       await this.persistEntity(entity);
     }
+  }
 
-    for (const value of this.values.values()) {
-      await this.persistValue(value);
+  persist(
+    value: Value<GetValueFromRepo<TRepo>, GetEntityFromRepo<TRepo>> | Entity<GetEntityFromRepo<TRepo>>,
+  ): Promise<Entity<GetEntityFromRepo<TRepo>>> {
+    return (value instanceof Value ? this.persistValue(value) : this.persistEntity(value)) as Promise<
+      Entity<GetEntityFromRepo<TRepo>>
+    >;
+  }
+
+  async trackOne(fn: (r: TRepo) => Promise<GetEntityFromRepo<TRepo>>): Promise<Entity<GetEntityFromRepo<TRepo>>> {
+    const entity = await fn(this.repo);
+    return this.trackEntity(this.createEntity(entity));
+  }
+
+  async trackMany(fn: (r: TRepo) => Promise<GetEntityFromRepo<TRepo>[]>): Promise<Entity<GetEntityFromRepo<TRepo>>[]> {
+    const entitiesStates = await fn(this.repo);
+    const result: Entity<GetEntityFromRepo<TRepo>>[] = [];
+    for (const state of entitiesStates) {
+      result.push(this.trackEntity(this.createEntity(state)));
     }
+    return result;
   }
 
-  async persist(
-    value: Value<RepoValue<TRepo>, RepoEntity<TRepo>> | Entity<RepoEntity<TRepo>>,
-  ): Promise<Entity<RepoEntity<TRepo>>> {
-    if (value instanceof Value) {
-      return (await this.persistValue(value)) as Entity<RepoEntity<TRepo>>;
-    }
-
-    return (await this.persistEntity(value)) as Entity<RepoEntity<TRepo>>;
-  }
-
-  async trackOne(fn: (r: TRepo) => Promise<RepoEntity<TRepo>>): Promise<Entity<RepoEntity<TRepo>>> {
-    return this.trackEntity(new Entity(await fn(this.repo))) as Entity<RepoEntity<TRepo>>;
-  }
-
-  async trackMany(fn: (r: TRepo) => Promise<RepoEntity<TRepo>[]>): Promise<Entity<RepoEntity<TRepo>>[]> {
-    const entities = await fn(this.repo);
-    return entities.map((entity) => this.trackEntity(new Entity(entity))) as Entity<RepoEntity<TRepo>>[];
-  }
-
-  private trackEntity(entity: Entity): Entity {
+  private trackEntity<V extends Entity<GetEntityFromRepo<TRepo>>>(entity: V): V {
     this.entities.set(entity.id, entity);
+    return entity;
+  }
+
+  private untrackEntity(entity: Entity): Entity | undefined {
+    this.entities.delete(entity.id);
     return entity;
   }
 
   private async persistEntity(entity: Entity): Promise<Entity> {
     await entity.persist(this.repo);
     if (entity.isDeleted) {
-      this.entities.delete(entity.id);
+      return this.untrackEntity(entity) as Entity;
     }
     return entity;
   }
 
   private async persistValue(value: Value<unknown, IEntity>): Promise<Entity> {
-    const entity = this.trackEntity(await value.persist(this.repo));
-    this.values.delete(value);
-    return entity;
+    return this.trackEntity((await value.persist(this.repo)) as Entity<GetEntityFromRepo<TRepo>>);
   }
 }
 

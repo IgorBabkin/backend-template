@@ -19,8 +19,8 @@ import { RouteMediator } from './lib/express/modules/RouteMediator';
 const env = ProcessEnv.parse(process.env);
 
 const appScope = createContainer(Scope.Application)
-  .use(new Common())
-  .use(process.env.NODE_ENV === 'production' ? new Production(env) : new Development(env));
+  .useModule(new Common())
+  .useModule(process.env.NODE_ENV === 'production' ? new Production(env) : new Development(env));
 
 const server = new ExpressServerBuilder()
   .addExpressModule(CORS)
@@ -35,7 +35,7 @@ server.on('error', (error: Error) => {
   appScope
     .resolve(DisposeInstances)
     .handle()
-    .catch((e) => console.error('disposeContainer', e))
+    .catch((e: unknown) => console.error('disposeContainer', e))
     .finally(() => appScope.dispose());
 
   if (error.name !== 'listen') {

@@ -1,4 +1,4 @@
-import { IEntity } from '../../lib/em/IEntity';
+import { IEntity } from '../../lib/em/Entity';
 
 export interface ITodoValue {
   title: string;

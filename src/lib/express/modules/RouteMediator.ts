@@ -1,5 +1,16 @@
 import { IContainer, Provider } from 'ts-ioc-container';
-import { HttpResponse, Route, RouteOptions } from '@ibabkin/openapi-to-server';
+type HttpResponse = {
+  status: number;
+  headers: Partial<{ Location: string }>;
+  body?: unknown;
+};
+
+type Route<Payload, Response extends HttpResponse> = {
+  handle(payload: Payload, context: unknown): Promise<Response>;
+};
+
+type RouteOptions = { tags: string[] };
+
 import { ZodType } from 'zod';
 import { Scope } from '../../components/Scope';
 import { AppRequestContext, IRequestContextKey } from '../../components/RequestContext';
@@ -27,13 +38,13 @@ export class RouteMediator {
     data: unknown,
     options: RouteOptions & { getBaseURI: () => string },
   ) {
-    const requestScope = this.appScope.createScope(Scope.Request);
+    const requestScope = this.appScope.createScope({ tags: [Scope.Request] });
     requestScope.register(
-      IRequestContextKey.key,
+      IRequestContextKey.token,
       Provider.fromValue(this.createContext({ ...options, payload: data })),
     );
     try {
-      return await operation(requestScope).handle(payloadValidator.parse(data));
+      return await operation(requestScope).handle(payloadValidator.parse(data), requestScope);
     } finally {
       requestScope.dispose();
     }

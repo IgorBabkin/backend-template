@@ -1,4 +1,4 @@
-import { IContainer } from 'ts-ioc-container';
+import { SingleToken } from 'ts-ioc-container';
 
 export interface ILogger {
   info(message: string, meta?: object): void;
@@ -14,6 +14,4 @@ export interface ILogger {
   logError(message: string, error: unknown, meta?: object): void;
 }
 
-export const ILoggerKey = Symbol('ILogger');
-
-export const createLogger = (topic: string) => (c: IContainer) => c.resolve(ILoggerKey, { args: [{ topic }] });
+export const ILoggerKey = new SingleToken<ILogger>('ILogger');

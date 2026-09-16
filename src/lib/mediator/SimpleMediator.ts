@@ -28,5 +28,5 @@ export class SimpleMediator implements IMediator {
   }
 }
 
-export const before = hook('SimpleMediator/BeforeHook');
-export const after = hook('SimpleMediator/AfterHook');
+export const before = hook('SimpleMediator/BeforeHook', () => {});
+export const after = hook('SimpleMediator/AfterHook', () => {});
