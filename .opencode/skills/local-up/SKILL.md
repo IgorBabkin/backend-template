@@ -1,6 +1,6 @@
 ---
 name: local-up
-description: Starts this backend project locally with PostgreSQL, Prisma migrations, generated OpenAPI artifacts, and the development server. Use when asked to run the project locally, start the app, or bring up local infrastructure.
+description: Starts this backend project locally or in a devcontainer with PostgreSQL, Prisma migrations, generated OpenAPI artifacts, and the development server. Use when asked to run the project locally, start the app, bring up local infrastructure, or set up a devcontainer environment.
 ---
 
 # Local project startup
@@ -14,6 +14,14 @@ Run from the repository root.
 - Docker with Compose
 - nvm when switching to the repository Node version
 
+## Devcontainer
+
+Instead of running Docker on the host, open the repository in a devcontainer:
+
+- VS Code: Dev Containers extension, then "Reopen in Container"
+- `npm ci --ignore-scripts && npm run generate` runs automatically on container creation
+- PostgreSQL is available from the `db` service at `db:5432`; skip the Docker steps below
+
 ## Startup
 
 1. Ensure local environment files exist without overwriting existing files:
@@ -23,13 +31,15 @@ Run from the repository root.
 [ -f database.env ] || cp database.env.example database.env
 ```
 
+The devcontainer already overrides `DATABASE_URL` in `.env` to point at the `db` service.
+
 2. Install dependencies when `node_modules` is absent:
 
 ```sh
 npm ci --ignore-scripts
 ```
 
-3. Start PostgreSQL in the background:
+3. Start PostgreSQL in the background (skip inside a devcontainer):
 
 ```sh
 docker compose up -d db
