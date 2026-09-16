@@ -114,12 +114,14 @@ jobs:
         run: npm run db:generate
       - name: Start application
         run: |
-          npm run start:dev > /tmp/backend-template.log 2>&1 &
+          nohup npm run start:dev > /tmp/backend-template.log 2>&1 </dev/null &
           for attempt in {1..30}; do
             if curl --fail --silent http://localhost:3000/todo > /dev/null; then
-              break
+              exit 0
             fi
             sleep 1
           done
+          cat /tmp/backend-template.log
+          exit 1
       - name: Run functional tests
         run: npm test -- --runInBand --coverage --passWithNoTests --testPathPattern="(^|/)(functional|functionals)(/|\\.)|\\.functional\\."
