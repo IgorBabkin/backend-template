@@ -5,6 +5,7 @@ module.exports = {
     '^.+\\.tsx?$': 'ts-jest',
   },
   collectCoverage: true,
+  setupFilesAfterEnv: ['<rootDir>/test/setup.ts'],
   coveragePathIgnorePatterns: ['/node_modules/', '/fixtures/', '__tests__'],
   globals: {
     'ts-jest': {
